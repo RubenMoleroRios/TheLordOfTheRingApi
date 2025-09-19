@@ -23,7 +23,7 @@ public class HybernateHeroesRepository implements HeroesRepositoryInterface {
     }
 
     @Override
-    public List<HeroDTO> findAll() {
+    public List<HeroDTO> findAllHeroes() {
         String jpql = "SELECT new HeroDTO(" +
                 "h.id, h.name, h.lastName, b.name, s.name, " +
                 "h.eyesColor, h.hairColor, h.height, h.description) " +

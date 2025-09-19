@@ -1,6 +1,6 @@
 package com.ruben.lotr.thelordofthering_api.dto;
 
-public class LotrHero {
+public class LotrHeroApiDTO {
 
     private String id;
     private String name;

@@ -11,9 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.ruben.lotr.thelordofthering_api.dto.HeroDTO;
-import com.ruben.lotr.thelordofthering_api.dto.LortApiResponse;
-import com.ruben.lotr.thelordofthering_api.dto.LotrHero;
+import com.ruben.lotr.thelordofthering_api.dto.LortApiResponseDTO;
+import com.ruben.lotr.thelordofthering_api.dto.LotrHeroApiDTO;
 import com.ruben.lotr.thelordofthering_api.repositories.interfaces.HeroesRepositoryInterface;
+import com.ruben.lotr.thelordofthering_api.utils.NumberUtils;
 
 @Service
 @Primary
@@ -22,6 +23,8 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
     private final WebClient webClient;
     private Map<Long, String> breedIdMap;
     private Map<Long, String> heroIdMap;
+    private Map<String, Double> differentSizeMap;
+    private int heightCmToM = 100;
 
     @Value("${lotr.token}")
     private String apiToken;
@@ -49,23 +52,29 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
         heroIdMap.put(8L, "5cd99d4bde30eff6ebccfc15");
         heroIdMap.put(9L, "5cd99d4bde30eff6ebccfd0d");
         heroIdMap.put(10L, "5cd99d4bde30eff6ebccfea0");
+
+        this.differentSizeMap = new HashMap<>();
+        differentSizeMap.put("Very tall", 3.0);
+        differentSizeMap.put("Tall", 2.0);
+        differentSizeMap.put("Tallest of the Elves of Gondolin", 2.5);
+        differentSizeMap.put("Short", 1.0);
     }
 
-    private List<LotrHero> getHeroesFromApi(String slug) {
+    private List<LotrHeroApiDTO> getHeroesFromApi(String slug) {
 
-        LortApiResponse response = this.webClient.get()
+        LortApiResponseDTO response = this.webClient.get()
                 .uri("/character" + slug)
                 .header("Authorization", "Bearer " + apiToken)
                 .retrieve()
-                .bodyToMono(LortApiResponse.class)
+                .bodyToMono(LortApiResponseDTO.class)
                 .block();
 
         return response.getDocs();
     }
 
     @Override
-    public List<HeroDTO> findAll() {
-        List<LotrHero> externalHero = getHeroesFromApi("");
+    public List<HeroDTO> findAllHeroes() {
+        List<LotrHeroApiDTO> externalHero = getHeroesFromApi("");
 
         return externalHero.stream().map(
                 h -> {
@@ -76,11 +85,12 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
                     Double heightHero = 0.0;
 
                     if (h.getHeight() != null && !h.getHeight().isEmpty()) {
-                        String[] heigth = h.getHeight().split("cm");
-                        try {
-                            heightHero = Double.valueOf(heigth[0].trim());
-                        } catch (NumberFormatException e) {
-                            heightHero = 0.0;
+                        if (NumberUtils.isDouble(h.getHeight().split("cm")[0])) {
+                            heightHero = this.parseHeightByHero(h, "cm") / heightCmToM;
+                        } else if (NumberUtils.isDouble(h.getHeight().split("m")[0])) {
+                            heightHero = this.parseHeightByHero(h, "m");
+                        } else {
+                            heightHero = this.getHeightByDifferentSize(h);
                         }
                     }
 
@@ -100,8 +110,8 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
     @Override
     public HeroDTO findById(Long id) {
 
-        List<LotrHero> externalHero = getHeroesFromApi("/" + this.heroIdMap.get(id));
-        LotrHero hero = externalHero.get(0);
+        List<LotrHeroApiDTO> externalHero = getHeroesFromApi("/" + this.heroIdMap.get(id));
+        LotrHeroApiDTO hero = externalHero.get(0);
 
         String[] completeName = hero.getName().split(" ", 2);
         String name = completeName[0];
@@ -110,11 +120,12 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
         Double heightHero = 0.0;
 
         if (hero.getHeight() != null && !hero.getHeight().isEmpty()) {
-            String[] heigth = hero.getHeight().split("cm");
-            try {
-                heightHero = Double.valueOf(heigth[0].trim());
-            } catch (NumberFormatException e) {
-                heightHero = 0.0;
+            if (NumberUtils.isDouble(hero.getHeight().split("cm")[0])) {
+                heightHero = this.parseHeightByHero(hero, "cm") / heightCmToM;
+            } else if (NumberUtils.isDouble(hero.getHeight().split("m")[0])) {
+                heightHero = this.parseHeightByHero(hero, "m");
+            } else {
+                heightHero = this.getHeightByDifferentSize(hero);
             }
         }
 
@@ -132,8 +143,7 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
 
     @Override
     public List<HeroDTO> searchByBreedId(Long breed) {
-
-        List<LotrHero> externalHero = getHeroesFromApi("?race=" + this.breedIdMap.get(breed));
+        List<LotrHeroApiDTO> externalHero = getHeroesFromApi("?race=" + this.breedIdMap.get(breed));
 
         return externalHero.stream()
                 .map(
@@ -145,11 +155,12 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
                             Double heightHero = 0.0;
 
                             if (h.getHeight() != null && !h.getHeight().isEmpty()) {
-                                String[] heigth = h.getHeight().split("cm");
-                                try {
-                                    heightHero = Double.valueOf(heigth[0].trim());
-                                } catch (NumberFormatException e) {
-                                    heightHero = 0.0;
+                                if (NumberUtils.isDouble(h.getHeight().split("cm")[0])) {
+                                    heightHero = this.parseHeightByHero(h, "cm") / 100;
+                                } else if (NumberUtils.isDouble(h.getHeight().split("m")[0])) {
+                                    heightHero = this.parseHeightByHero(h, "m");
+                                } else {
+                                    heightHero = this.getHeightByDifferentSize(h);
                                 }
                             }
 
@@ -165,13 +176,26 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
                                     "Descripción no definida");
                         })
                 .collect(Collectors.toList());
-
     }
 
     @Override
     public List<HeroDTO> searchBySideId(Long side) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    private Double parseHeightByHero(LotrHeroApiDTO h, String regex) {
+        String[] heigth = h.getHeight().split(regex);
+        return Double.valueOf(heigth[0].trim());
+    }
+
+    private Double getHeightByDifferentSize(LotrHeroApiDTO h) {
+        for (String key : differentSizeMap.keySet()) {
+            if (h.getHeight().contains(key)) {
+                return this.differentSizeMap.get(key);
+            }
+        }
+        return 0.0;
     }
 
 }

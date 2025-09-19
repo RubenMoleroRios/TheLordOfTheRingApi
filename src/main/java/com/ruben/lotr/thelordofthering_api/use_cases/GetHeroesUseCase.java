@@ -17,7 +17,7 @@ public class GetHeroesUseCase {
     }
 
     public List<HeroDTO> execute() {
-        return heroesRepository.findAll();
+        return heroesRepository.findAllHeroes();
     }
 
 }

@@ -44,7 +44,7 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
         }
 
         @Override
-        public List<HeroDTO> findAll() {
+        public List<HeroDTO> findAllHeroes() {
                 return heroList.stream()
                                 .map(hero -> {
                                         // Buscar la raza correspondiente

@@ -12,6 +12,6 @@ public interface HeroesRepositoryInterface {
 
     public List<HeroDTO> searchBySideId(Long side);
 
-    public List<HeroDTO> findAll();
+    public List<HeroDTO> findAllHeroes();
 
 }
