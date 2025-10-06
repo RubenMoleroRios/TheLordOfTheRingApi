@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+<<<<<<< HEAD
+=======
+
+
+.env
+>>>>>>> 23001e5 (app dockerized)

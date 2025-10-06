@@ -1,0 +1,71 @@
+services:
+  lotr-app:
+    container_name: lotr-app
+    image: api-lotr-image
+    ports:
+      - '${APP_PORT}:${APP_PORT}'
+    networks:
+      - net-backend
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - APP_PORT=${APP_PORT}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - SERVICE_DB_CONTAINER_NAME=${SERVICE_DB_CONTAINER_NAME}
+      - LOTR_TOKEN=${LOTR_TOKEN}
+    depends_on:
+      lotr-db:
+        condition: service_healthy
+
+  lotr-db:
+    container_name: lotr-db
+    image: 'mysql/mysql-server:8.0'
+    restart: always
+    ports:
+      - '${DB_PORT}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASSWORD}'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: '${DB_NAME}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    volumes:
+      - 'lotr-db-vol:/var/lib/mysql'
+      - ./sql:/docker-entrypoint-initdb.d
+    networks:
+      - net-backend
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
+      retries: 3
+      timeout: 5s
+
+  phpmyadmin:
+    depends_on:
+      - lotr-db
+    image: phpmyadmin:5.2.2-apache
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ./volumes/phpmyadmin/sessions:/sessions
+    environment:
+      PMA_HOST: ${SERVICE_DB_CONTAINER_NAME}
+      PMA_PORT: ${DB_PORT}
+      PMA_USER: ${DB_USERNAME}
+      PMA_PASSWORD: ${DB_PASSWORD}
+      PMA_ARBITRARY: 1
+    networks:
+      - net-backend
+
+networks:
+  net-backend:
+    driver: bridge
+volumes:
+  lotr-db-vol:
+    driver: local

@@ -2,7 +2,7 @@ package com.ruben.lotr.thelordofthering_api.repositories.implementations;
 
 import java.util.List;
 
-//import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -12,7 +12,7 @@ import com.ruben.lotr.thelordofthering_api.dto.HeroDTO;
 import com.ruben.lotr.thelordofthering_api.repositories.interfaces.HeroesRepositoryInterface;
 
 @Repository
-// @Primary
+@Primary
 public class HybernateHeroesRepository implements HeroesRepositoryInterface {
 
     @PersistenceContext

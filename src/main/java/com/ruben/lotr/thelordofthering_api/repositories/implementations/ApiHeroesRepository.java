@@ -6,7 +6,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Primary;
+
+//import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -17,7 +18,7 @@ import com.ruben.lotr.thelordofthering_api.repositories.interfaces.HeroesReposit
 import com.ruben.lotr.thelordofthering_api.utils.NumberUtils;
 
 @Service
-@Primary
+//@Primary
 public class ApiHeroesRepository implements HeroesRepositoryInterface {
 
     private final WebClient webClient;

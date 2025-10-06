@@ -11,7 +11,8 @@ COPY . .
 RUN ./mvnw clean package -DskipTests
 
 # Expone el puerto en el que corre Spring Boot
-EXPOSE 8080
+EXPOSE 9525
 
 # Comando para ejecutar el JAR generado
 CMD ["java", "-jar", "target/thelordofthering-api-0.0.1-SNAPSHOT.jar"]
+
