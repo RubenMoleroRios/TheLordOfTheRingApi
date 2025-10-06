@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: springboot-app
+    env: java
+    plan: free
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    envVars:
+      - key: JAVA_VERSION
+        value: 17
