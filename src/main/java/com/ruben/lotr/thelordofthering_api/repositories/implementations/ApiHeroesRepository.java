@@ -3,6 +3,7 @@ package com.ruben.lotr.thelordofthering_api.repositories.implementations;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +19,7 @@ import com.ruben.lotr.thelordofthering_api.repositories.interfaces.HeroesReposit
 import com.ruben.lotr.thelordofthering_api.utils.NumberUtils;
 
 @Service
-//@Primary
+// @Primary
 public class ApiHeroesRepository implements HeroesRepositoryInterface {
 
     private final WebClient webClient;
@@ -109,37 +110,45 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
     }
 
     @Override
-    public HeroDTO findById(Long id) {
+    public Optional<HeroDTO> findById(Long id) {
+        try {
+            List<LotrHeroApiDTO> externalHero = getHeroesFromApi("/" + this.heroIdMap.get(id));
 
-        List<LotrHeroApiDTO> externalHero = getHeroesFromApi("/" + this.heroIdMap.get(id));
-        LotrHeroApiDTO hero = externalHero.get(0);
-
-        String[] completeName = hero.getName().split(" ", 2);
-        String name = completeName[0];
-        String lastName = completeName.length > 1 ? completeName[1] : "sin apellido";
-
-        Double heightHero = 0.0;
-
-        if (hero.getHeight() != null && !hero.getHeight().isEmpty()) {
-            if (NumberUtils.isDouble(hero.getHeight().split("cm")[0])) {
-                heightHero = this.parseHeightByHero(hero, "cm") / heightCmToM;
-            } else if (NumberUtils.isDouble(hero.getHeight().split("m")[0])) {
-                heightHero = this.parseHeightByHero(hero, "m");
-            } else {
-                heightHero = this.getHeightByDifferentSize(hero);
+            if (externalHero == null || externalHero.isEmpty()) {
+                return Optional.empty();
             }
-        }
+            LotrHeroApiDTO hero = externalHero.get(0);
 
-        return new HeroDTO(
-                id,
-                name,
-                lastName,
-                hero.getRace(),
-                "Bando no definido",
-                "Color de ojos no definido",
-                hero.getHair(),
-                heightHero,
-                "Descripción no definida");
+            String[] completeName = hero.getName().split(" ", 2);
+            String name = completeName[0];
+            String lastName = completeName.length > 1 ? completeName[1] : "sin apellido";
+
+            Double heightHero = 0.0;
+
+            if (hero.getHeight() != null && !hero.getHeight().isEmpty()) {
+                if (NumberUtils.isDouble(hero.getHeight().split("cm")[0])) {
+                    heightHero = this.parseHeightByHero(hero, "cm") / heightCmToM;
+                } else if (NumberUtils.isDouble(hero.getHeight().split("m")[0])) {
+                    heightHero = this.parseHeightByHero(hero, "m");
+                } else {
+                    heightHero = this.getHeightByDifferentSize(hero);
+                }
+            }
+
+            HeroDTO heroDTO = new HeroDTO(
+                    id,
+                    name,
+                    lastName,
+                    hero.getRace(),
+                    "Bando no definido",
+                    "Color de ojos no definido",
+                    hero.getHair(),
+                    heightHero,
+                    "Descripción no definida");
+            return Optional.of(heroDTO);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
     @Override
