@@ -1,10 +1,12 @@
 package com.ruben.lotr.thelordofthering_api.repositories.implementations;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
@@ -36,7 +38,7 @@ public class HybernateHeroesRepository implements HeroesRepositoryInterface {
     }
 
     @Override
-    public HeroDTO findById(Long id) {
+    public Optional<HeroDTO> findById(Long id) {
         String jpql = "SELECT new HeroDTO(" +
                 "h.id, h.name, h.lastName, b.name, s.name, " +
                 "h.eyesColor, h.hairColor, h.height, h.description) " +
@@ -48,7 +50,11 @@ public class HybernateHeroesRepository implements HeroesRepositoryInterface {
         TypedQuery<HeroDTO> query = entityManager.createQuery(jpql, HeroDTO.class);
         query.setParameter("id", id);
 
-        return query.getSingleResult();
+        try {
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Override

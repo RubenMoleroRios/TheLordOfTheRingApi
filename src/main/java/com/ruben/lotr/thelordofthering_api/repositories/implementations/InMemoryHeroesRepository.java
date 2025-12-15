@@ -2,6 +2,7 @@ package com.ruben.lotr.thelordofthering_api.repositories.implementations;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 //import org.springframework.context.annotation.Primary;
@@ -76,23 +77,34 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
                                 .collect(Collectors.toList());
         }
 
-        public HeroDTO findById(Long id) {
-                Hero hero = heroList.stream().filter(h -> h.getId().equals(id)).findFirst().orElseThrow();
-                Breed breed = breedList.stream().filter(b -> b.getId().equals(hero.getIdBreed())).findFirst()
-                                .orElseThrow();
-                Side side = sideList.stream().filter(s -> s.getId().equals(hero.getIdSide())).findFirst()
-                                .orElseThrow();
+        public Optional<HeroDTO> findById(Long id) {
+                return heroList.stream()
+                                .filter(h -> h.getId().equals(id))
+                                .findFirst()
+                                .map(hero -> {
+                                        String breedName = breedList.stream()
+                                                        .filter(b -> b.getId().equals(hero.getIdBreed()))
+                                                        .findFirst()
+                                                        .map(Breed::getName)
+                                                        .orElse("Raza no definida");
 
-                return new HeroDTO(
-                                hero.getId(),
-                                hero.getName(),
-                                hero.getLastName(),
-                                breed.getName(),
-                                side.getName(),
-                                hero.getEyesColor(),
-                                hero.getHairColor(),
-                                hero.getHeight(),
-                                hero.getDescription());
+                                        String sideName = sideList.stream()
+                                                        .filter(s -> s.getId().equals(hero.getIdSide()))
+                                                        .findFirst()
+                                                        .map(Side::getName)
+                                                        .orElse("Bando no definido");
+
+                                        return new HeroDTO(
+                                                        hero.getId(),
+                                                        hero.getName(),
+                                                        hero.getLastName(),
+                                                        breedName,
+                                                        sideName,
+                                                        hero.getEyesColor(),
+                                                        hero.getHairColor(),
+                                                        hero.getHeight(),
+                                                        hero.getDescription());
+                                });
         }
 
         @Override

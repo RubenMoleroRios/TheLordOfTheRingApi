@@ -1,12 +1,13 @@
 package com.ruben.lotr.thelordofthering_api.repositories.interfaces;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.ruben.lotr.thelordofthering_api.dto.HeroDTO;
 
 public interface HeroesRepositoryInterface {
 
-    public HeroDTO findById(Long id);
+    public Optional<HeroDTO> findById(Long id);
 
     public List<HeroDTO> searchByBreedId(Long breed);
 
