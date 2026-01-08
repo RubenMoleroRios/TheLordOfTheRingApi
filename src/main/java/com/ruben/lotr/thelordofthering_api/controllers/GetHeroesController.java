@@ -3,31 +3,38 @@ package com.ruben.lotr.thelordofthering_api.controllers;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ruben.lotr.thelordofthering_api.dto.HeroDTO;
+import com.ruben.lotr.core.character.application.response.presenter.HeroResponsePresenter;
+import com.ruben.lotr.core.character.application.usecase.GetHeroesUseCase;
+import com.ruben.lotr.core.character.application.response.dto.HeroDTO;
 import com.ruben.lotr.thelordofthering_api.http.ApiResponse;
 import com.ruben.lotr.thelordofthering_api.http.HttpStatusEnum;
-import com.ruben.lotr.thelordofthering_api.use_cases.GetHeroesUseCase;
+
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping
-
+@RequestMapping("/heroes")
 public class GetHeroesController {
 
-    @Autowired
-    private GetHeroesUseCase getHeroesUseCase;
+    private final GetHeroesUseCase getHeroesUseCase;
+    private final HeroResponsePresenter presenter;
 
-    @GetMapping("/heroes")
+    public GetHeroesController(
+            GetHeroesUseCase getHeroesUseCase,
+            HeroResponsePresenter presenter) {
+        this.getHeroesUseCase = getHeroesUseCase;
+        this.presenter = presenter;
+    }
+
+    @GetMapping
     public ResponseEntity<Map<String, Object>> execute() {
-        List<HeroDTO> heroes = getHeroesUseCase.execute();
+        List<HeroDTO> dtos = getHeroesUseCase.execute();
         return ApiResponse.success(
                 HttpStatusEnum.OK,
-                heroes,
-                "Héroes encontrados exitosamente");
+                presenter.toCollection(dtos),
+                "Heroes successfully retrieved.");
     }
 }

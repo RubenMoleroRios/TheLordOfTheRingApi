@@ -17,8 +17,8 @@ public class ApiResponse {
         response.put("timestamp", LocalDateTime.now().toString());
         response.put("status", "error");
         response.put("message", ExceptionMessage.getMessage(exception));
-        response.put("error", status.getReasonPhrase());
         response.put("data", "");
+        response.put("error", status.getReasonPhrase());
 
         if (exception instanceof BaseDomainException) {
             response.put("code", exception.getClass().getSimpleName());

@@ -3,31 +3,38 @@ package com.ruben.lotr.thelordofthering_api.controllers;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ruben.lotr.thelordofthering_api.dto.HeroDTO;
+import com.ruben.lotr.core.character.application.response.presenter.HeroResponsePresenter;
+import com.ruben.lotr.core.character.application.usecase.GetHeroesByBreedUseCase;
+import com.ruben.lotr.core.character.application.response.dto.HeroDTO;
 import com.ruben.lotr.thelordofthering_api.http.ApiResponse;
 import com.ruben.lotr.thelordofthering_api.http.HttpStatusEnum;
-import com.ruben.lotr.thelordofthering_api.use_cases.GetHeroesByBreedUseCase;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
-@RequestMapping
+@RequestMapping("/breeds/{breedId}/heroes")
 public class GetHeroesByBreedController {
 
-    @Autowired
-    private GetHeroesByBreedUseCase getHeroesByBreedUseCase;
+    private final GetHeroesByBreedUseCase getHeroesByBreedUseCase;
+    private final HeroResponsePresenter presenter;
 
-    @GetMapping("/breeds/{breedId}/heroes")
-    public ResponseEntity<Map<String, Object>> execute(@PathVariable Long breedId) {
-        List<HeroDTO> heroes = getHeroesByBreedUseCase.execute(breedId);
+    public GetHeroesByBreedController(
+            GetHeroesByBreedUseCase getHeroesByBreedUseCase,
+            HeroResponsePresenter presenter) {
+        this.getHeroesByBreedUseCase = getHeroesByBreedUseCase;
+        this.presenter = presenter;
+    }
+
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> execute(@PathVariable String breedId) {
+        List<HeroDTO> dtos = getHeroesByBreedUseCase.execute(breedId);
         return ApiResponse.success(
                 HttpStatusEnum.OK,
-                heroes,
-                "Héroes encontrados exitosamente");
+                presenter.toCollection(dtos),
+                "Heroes successfully retrieved.");
     }
 }

@@ -1,0 +1,191 @@
+#!/usr/bin/env bash
+# Usage examples:
+#   - Generate tree.txt at repo root:
+#       bash scripts/dump_tree
+#   - Choose a custom output path:
+#       bash scripts/dump_tree ./docs/tree.txt
+#   - Include venv/ too (can be huge):
+#       INCLUDE_VENV=1 bash scripts/dump_tree
+#
+# Notes:
+#   - Uses `tree` if available (preferred).
+#   - Falls back to `find` + `awk` if `tree` is not installed.
+
+set -euo pipefail
+
+# Dump a project directory tree (tree-like output) to a txt file.
+# - Uses `tree` if available (preferred).
+# - Falls back to `find` + `awk` if `tree` is not installed.
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+OUT_DIR="${SCRIPT_DIR}/_out"
+DEFAULT_OUTPUT_FILE="${OUT_DIR}/tree.txt"
+OUTPUT_FILE="${1:-${DEFAULT_OUTPUT_FILE}}"
+
+mkdir -p "$(dirname "${OUTPUT_FILE}")"
+
+# Common excludes to avoid noise.
+# Adjust as you like.
+EXCLUDE_DIRS=(
+  ".git"
+  "__pycache__"
+  ".pytest_cache"
+  ".mypy_cache"
+  ".ruff_cache"
+  ".idea"
+)
+
+# By default we exclude venv (usually huge). Set INCLUDE_VENV=1 to include it.
+INCLUDE_VENV="${INCLUDE_VENV:-0}"
+if [[ "${INCLUDE_VENV}" != "1" ]]; then
+  EXCLUDE_DIRS+=("venv")
+fi
+
+# Build an exclude pattern for `tree -I` (pipe-separated glob patterns).
+# Example: ".git|__pycache__|venv|*.pyc"
+EXCLUDE_GLOB=""
+for d in "${EXCLUDE_DIRS[@]}"; do
+  if [[ -z "${EXCLUDE_GLOB}" ]]; then
+    EXCLUDE_GLOB="${d}"
+  else
+    EXCLUDE_GLOB="${EXCLUDE_GLOB}|${d}"
+  fi
+done
+EXCLUDE_GLOB="${EXCLUDE_GLOB}|*.pyc"
+
+if command -v tree >/dev/null 2>&1; then
+  # `tree` output is exactly the style you want: ├── └── │
+  # --noreport avoids the summary line ("X directories, Y files")
+  (
+    cd "${REPO_ROOT}"
+    tree -a --noreport -I "${EXCLUDE_GLOB}" .
+  ) > "${OUTPUT_FILE}"
+
+  # Normalize header to match the style we used in chat (projectname/ instead of ".")
+  # Replace first line "." with "plus-ultra/" (repo folder name).
+  repo_name="$(basename "${REPO_ROOT}")"
+  # Works on GNU sed and busybox sed
+  sed -i "1s|^\.$|${repo_name}/|g" "${OUTPUT_FILE}"
+
+  echo "OK: árbol volcado en: ${OUTPUT_FILE}"
+  exit 0
+fi
+
+# Fallback (no `tree` installed)
+# This produces a tree-like structure using bash recursion.
+# It aims to match `tree` formatting (├──/└──/│ and trailing / for dirs).
+(
+  echo "$(basename "${REPO_ROOT}")/"
+
+  cd "${REPO_ROOT}"
+
+  OUTPUT_CANON="$(readlink -f "${OUTPUT_FILE}" 2>/dev/null || printf '%s' "${OUTPUT_FILE}")"
+
+  should_skip_name() {
+    local name="$1"
+
+    for d in "${EXCLUDE_DIRS[@]}"; do
+      [[ "${name}" == "${d}" ]] && return 0
+    done
+
+    [[ "${name}" == *.pyc ]] && return 0
+    return 1
+  }
+
+  should_skip_path() {
+    local p="$1"
+    local name
+    name="$(basename "${p}")"
+
+    should_skip_name "${name}" && return 0
+
+    if [[ -f "${p}" ]]; then
+      local pcanon
+      pcanon="$(readlink -f "${p}" 2>/dev/null || printf '%s' "${p}")"
+      [[ "${pcanon}" == "${OUTPUT_CANON}" ]] && return 0
+    fi
+
+    return 1
+  }
+
+  list_entries_sorted() {
+    local dir="$1"
+    local -a dirs=() files=() all=()
+    local p
+
+    shopt -s dotglob nullglob
+    for p in "${dir}"/*; do
+      should_skip_path "${p}" && continue
+      if [[ -d "${p}" ]]; then
+        dirs+=("${p}")
+      else
+        files+=("${p}")
+      fi
+    done
+    shopt -u dotglob nullglob
+
+    if (( ${#dirs[@]} > 0 )); then
+      mapfile -d '' -t dirs < <(printf '%s\0' "${dirs[@]}" | sort -z)
+      all+=("${dirs[@]}")
+    fi
+
+    if (( ${#files[@]} > 0 )); then
+      mapfile -d '' -t files < <(printf '%s\0' "${files[@]}" | sort -z)
+      all+=("${files[@]}")
+    fi
+
+    printf '%s\n' "${all[@]}"
+  }
+
+  # Limit depth for venv only (fallback). Set VENV_MAX_DEPTH=-1 for unlimited.
+  VENV_MAX_DEPTH="${VENV_MAX_DEPTH:-2}"
+
+  print_tree() {
+    local dir="$1"
+    local prefix="$2"
+    local depth="$3"
+    local venv_base_depth="$4"
+
+    local -a entries=()
+    mapfile -t entries < <(list_entries_sorted "${dir}")
+
+    local count=${#entries[@]}
+    local i p name branch next_prefix
+    for ((i=0; i<count; i++)); do
+      p="${entries[$i]}"
+      name="$(basename "${p}")"
+
+      if (( i == count - 1 )); then
+        branch="└── "
+        next_prefix="${prefix}    "
+      else
+        branch="├── "
+        next_prefix="${prefix}│   "
+      fi
+
+      if [[ -d "${p}" ]]; then
+        printf '%s%s%s/\n' "${prefix}" "${branch}" "${name}"
+
+        if [[ "${name}" == "venv" && "${VENV_MAX_DEPTH}" != "-1" ]]; then
+          # If venv appears, cap recursion depth inside it
+          if (( venv_base_depth < 0 )); then
+            venv_base_depth=${depth}
+          fi
+          if (( (depth - venv_base_depth) < VENV_MAX_DEPTH )); then
+            print_tree "${p}" "${next_prefix}" "$((depth + 1))" "${venv_base_depth}"
+          fi
+        else
+          print_tree "${p}" "${next_prefix}" "$((depth + 1))" "${venv_base_depth}"
+        fi
+      else
+        printf '%s%s%s\n' "${prefix}" "${branch}" "${name}"
+      fi
+    done
+  }
+
+  print_tree "." "" 0 -1
+) > "${OUTPUT_FILE}"
+
+echo "OK: árbol volcado en: ${OUTPUT_FILE} (fallback sin 'tree')"
