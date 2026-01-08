@@ -1,6 +1,6 @@
-package com.ruben.lotr.thelordofthering_api.exceptions;
+package com.ruben.lotr.core.character.domain.exception;
 
-import com.ruben.lotr.thelordofthering_api.exceptions.father.BaseDomainException;
+import com.ruben.lotr.core.shared.domain.exception.BaseDomainException;
 
 public class SideNotFoundException extends BaseDomainException {
 

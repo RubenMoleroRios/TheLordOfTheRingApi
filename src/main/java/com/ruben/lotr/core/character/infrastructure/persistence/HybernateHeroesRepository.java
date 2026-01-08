@@ -1,20 +1,23 @@
-package com.ruben.lotr.thelordofthering_api.repositories.implementations;
+package com.ruben.lotr.core.character.infrastructure.persistence;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.context.annotation.Primary;
+//import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
-import com.ruben.lotr.thelordofthering_api.dto.HeroDTO;
-import com.ruben.lotr.thelordofthering_api.repositories.interfaces.HeroesRepositoryInterface;
+import com.ruben.lotr.core.character.domain.model.Hero;
+import com.ruben.lotr.core.character.domain.repository.HeroesRepositoryInterface;
+import com.ruben.lotr.core.character.domain.valueobject.BreedIdVO;
+import com.ruben.lotr.core.character.domain.valueobject.HeroIdVO;
+import com.ruben.lotr.core.character.domain.valueobject.SideIdVO;
 
 @Repository
-@Primary
+// @Primary
 public class HybernateHeroesRepository implements HeroesRepositoryInterface {
 
     @PersistenceContext
@@ -25,21 +28,21 @@ public class HybernateHeroesRepository implements HeroesRepositoryInterface {
     }
 
     @Override
-    public List<HeroDTO> findAllHeroes() {
-        String jpql = "SELECT new HeroDTO(" +
+    public List<Hero> findAll() {
+        String jpql = "SELECT new Hero(" +
                 "h.id, h.name, h.lastName, b.name, s.name, " +
                 "h.eyesColor, h.hairColor, h.height, h.description) " +
                 "FROM HeroEntity h " +
                 "JOIN h.breed b " +
                 "JOIN h.side s";
 
-        TypedQuery<HeroDTO> query = entityManager.createQuery(jpql, HeroDTO.class);
+        TypedQuery<Hero> query = entityManager.createQuery(jpql, Hero.class);
         return query.getResultList();
     }
 
     @Override
-    public Optional<HeroDTO> findById(Long id) {
-        String jpql = "SELECT new HeroDTO(" +
+    public Optional<Hero> findById(HeroIdVO id) {
+        String jpql = "SELECT new Hero(" +
                 "h.id, h.name, h.lastName, b.name, s.name, " +
                 "h.eyesColor, h.hairColor, h.height, h.description) " +
                 "FROM HeroEntity h " +
@@ -47,8 +50,8 @@ public class HybernateHeroesRepository implements HeroesRepositoryInterface {
                 "JOIN h.side s " +
                 "WHERE h.id = :id";
 
-        TypedQuery<HeroDTO> query = entityManager.createQuery(jpql, HeroDTO.class);
-        query.setParameter("id", id);
+        TypedQuery<Hero> query = entityManager.createQuery(jpql, Hero.class);
+        query.setParameter("id", id.value());
 
         try {
             return Optional.of(query.getSingleResult());
@@ -58,30 +61,30 @@ public class HybernateHeroesRepository implements HeroesRepositoryInterface {
     }
 
     @Override
-    public List<HeroDTO> searchByBreedId(Long breed) {
-        String jpql = "SELECT new HeroDTO(" +
+    public List<Hero> searchByBreedId(BreedIdVO breedId) {
+        String jpql = "SELECT new Hero(" +
                 "h.id, h.name, h.lastName, b.name, s.name, h.eyesColor, h.hairColor, h.height, h.description) " +
                 "FROM HeroEntity h " +
                 "JOIN h.breed b " +
                 "JOIN h.side s " +
-                "WHERE b.id = :breed";
-        TypedQuery<HeroDTO> query = entityManager.createQuery(
-                jpql, HeroDTO.class);
-        query.setParameter("breed", breed);
+                "WHERE b.id = :breedId";
+        TypedQuery<Hero> query = entityManager.createQuery(
+                jpql, Hero.class);
+        query.setParameter("breedId", breedId.value());
         return query.getResultList();
     }
 
     @Override
-    public List<HeroDTO> searchBySideId(Long side) {
-        String jpql = "SELECT new HeroDTO(" +
+    public List<Hero> searchBySideId(SideIdVO sideId) {
+        String jpql = "SELECT new Hero(" +
                 "h.id, h.name, h.lastName, b.name, s.name, h.eyesColor, h.hairColor, h.height, h.description) " +
                 "FROM HeroEntity h " +
                 "JOIN h.breed b " +
                 "JOIN h.side s " +
-                "WHERE s.id = :side";
-        TypedQuery<HeroDTO> query = entityManager.createQuery(
-                jpql, HeroDTO.class);
-        query.setParameter("side", side);
+                "WHERE s.id = :sideId";
+        TypedQuery<Hero> query = entityManager.createQuery(
+                jpql, Hero.class);
+        query.setParameter("sideId", sideId.value());
 
         return query.getResultList();
     }

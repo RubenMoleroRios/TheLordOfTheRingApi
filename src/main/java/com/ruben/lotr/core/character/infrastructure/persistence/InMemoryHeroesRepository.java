@@ -1,4 +1,4 @@
-package com.ruben.lotr.thelordofthering_api.repositories.implementations;
+package com.ruben.lotr.core.character.infrastructure.persistence;
 
 import java.util.Arrays;
 import java.util.List;

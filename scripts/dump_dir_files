@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+# Usage examples:
+#   - Dump all files under docker/ into docker_dump.txt:
+#       bash scripts/dump_dir_files docker docker_dump.txt
+#   - Dump using default output path (in repo root):
+#       bash scripts/dump_dir_files docker
+#
+# Output format per file:
+#   (two newlines)
+#   # path/relative/to/repo
+#   (one blank line)
+#   <file contents>
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+OUT_DIR="${SCRIPT_DIR}/_out"
+
+if [[ -z "${1:-}" ]]; then
+  echo "❌ Directory argument required (e.g. 'docker')" >&2
+  exit 1
+fi
+
+INPUT_DIR="$1"
+
+# If INPUT_DIR is relative, treat it as relative to repo root.
+if [[ "${INPUT_DIR}" = /* ]]; then
+  TARGET_DIR="${INPUT_DIR}"
+else
+  TARGET_DIR="${REPO_ROOT}/${INPUT_DIR}"
+fi
+
+if [[ ! -d "${TARGET_DIR}" ]]; then
+  echo "❌ Not a directory: ${INPUT_DIR}" >&2
+  exit 1
+fi
+
+# Default output file name: <dir>_files_dump.txt (slashes -> underscores)
+DEFAULT_OUT_NAME="$(printf '%s' "${INPUT_DIR}" | tr '/\\' '__')_files_dump.txt"
+DEFAULT_OUTPUT_FILE="${OUT_DIR}/${DEFAULT_OUT_NAME}"
+OUTPUT_FILE="${2:-${DEFAULT_OUTPUT_FILE}}"
+
+# Exclude some noisy directories anywhere in the traversal.
+EXCLUDE_DIRS=(
+  ".git"
+  "__pycache__"
+  ".pytest_cache"
+  ".mypy_cache"
+  ".ruff_cache"
+  ".idea"
+)
+
+# Build a safe find command (no eval). Use -print0 for safety.
+FIND_CMD=(find "${TARGET_DIR}")
+FIND_CMD+=("(")
+for i in "${!EXCLUDE_DIRS[@]}"; do
+  (( i > 0 )) && FIND_CMD+=(-o)
+  FIND_CMD+=(-name "${EXCLUDE_DIRS[$i]}")
+done
+FIND_CMD+=(")" -prune -o -type f ! -name "*.pyc" -print0)
+
+# Ensure output directory exists, and start fresh
+mkdir -p "$(dirname "${OUTPUT_FILE}")"
+: > "${OUTPUT_FILE}"
+
+# Canonical path of output to avoid re-including it
+OUTPUT_CANON="$(readlink -f "${OUTPUT_FILE}" 2>/dev/null || printf '%s' "${OUTPUT_FILE}")"
+
+# Collect files in deterministic order
+mapfile -d '' -t FILES < <("${FIND_CMD[@]}" | sort -z)
+
+for abs_path in "${FILES[@]}"; do
+  abs_canon="$(readlink -f "${abs_path}" 2>/dev/null || printf '%s' "${abs_path}")"
+  [[ "${abs_canon}" == "${OUTPUT_CANON}" ]] && continue
+
+  # Compute repo-relative path
+  rel_path="${abs_path#${REPO_ROOT}/}"
+
+  # Two newlines before header, one blank line after header
+  printf "\n\n# %s\n\n" "${rel_path}" >> "${OUTPUT_FILE}"
+
+  # Append content
+  cat -- "${abs_path}" >> "${OUTPUT_FILE}"
+
+  # Ensure the file content ends with a newline (but don't add a second one)
+  if [[ -s "${abs_path}" ]]; then
+    last_byte="$(tail -c 1 -- "${abs_path}" | od -An -tu1 | tr -d ' ')"
+    if [[ "${last_byte}" != "10" ]]; then
+      printf "\n" >> "${OUTPUT_FILE}"
+    fi
+  fi
+
+done
+
+echo "OK: dumped files from '${INPUT_DIR}' into: ${OUTPUT_FILE}"

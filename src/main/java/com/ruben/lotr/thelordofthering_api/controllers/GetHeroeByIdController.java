@@ -2,32 +2,40 @@ package com.ruben.lotr.thelordofthering_api.controllers;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ruben.lotr.thelordofthering_api.dto.HeroDTO;
+import com.ruben.lotr.core.character.application.response.dto.HeroDTO;
+import com.ruben.lotr.core.character.application.response.presenter.HeroResponsePresenter;
+import com.ruben.lotr.core.character.application.usecase.GetHeroeByIdUseCase;
 import com.ruben.lotr.thelordofthering_api.http.ApiResponse;
 import com.ruben.lotr.thelordofthering_api.http.HttpStatusEnum;
-import com.ruben.lotr.thelordofthering_api.use_cases.GetHeroeByIdUseCase;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping
+@RequestMapping("/heroes")
 public class GetHeroeByIdController {
 
-    @Autowired
-    private GetHeroeByIdUseCase getHeroeByIdUseCase;
+    private final GetHeroeByIdUseCase getHeroeByIdUseCase;
+    private final HeroResponsePresenter presenter;
 
-    @GetMapping("/heroes/{id}")
-    public ResponseEntity<Map<String, Object>> execute(@PathVariable Long id) {
+    public GetHeroeByIdController(
+            GetHeroeByIdUseCase getHeroeByIdUseCase,
+            HeroResponsePresenter presenter) {
+        this.getHeroeByIdUseCase = getHeroeByIdUseCase;
+        this.presenter = presenter;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> execute(@PathVariable String id) {
         HeroDTO heroe = getHeroeByIdUseCase.execute(id);
 
         return ApiResponse.success(
                 HttpStatusEnum.OK,
-                heroe,
+                presenter.toMap(heroe),
                 "Héroe encontrado exitosamente");
     }
 
