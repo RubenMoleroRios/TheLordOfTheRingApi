@@ -87,7 +87,7 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
     public List<Hero> findAll() {
         return getHeroesFromApi("")
                 .stream()
-                .map(h -> toDomain(h, null))
+                .map(lotrHeroApiDTO -> toDomain(lotrHeroApiDTO, null))
                 .toList();
     }
 
@@ -100,7 +100,7 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
 
         return getHeroesFromApi("?race=" + race)
                 .stream()
-                .map(h -> toDomain(h, null))
+                .map(lotrHeroApiDTO -> toDomain(lotrHeroApiDTO, null))
                 .toList();
     }
 
@@ -111,22 +111,22 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
 
     /* ===================== MAPPING ===================== */
 
-    private Hero toDomain(LotrHeroApiDTO h, HeroIdVO heroId) {
+    private Hero toDomain(LotrHeroApiDTO lotrHeroApiDTO, HeroIdVO heroId) {
 
-        String[] nameParts = h.getName().split(" ", 2);
-        BreedNameVO breedName = BreedNameVO.create(h.getRace() != null ? h.getRace() : BreedNameVO.unknown().value());
+        String[] nameParts = lotrHeroApiDTO.getName().split(" ", 2);
 
         return Hero.create(
                 heroId,
-                Breed.create(BreedIdVO.generate(), breedName),
+                toBreed(lotrHeroApiDTO.getRace()),
                 Side.unknown(),
                 new HeroNameVO(nameParts[0]),
                 nameParts.length > 1 && !nameParts[1].isBlank() ? new HeroLastNameVO(nameParts[1])
                         : HeroLastNameVO.unknown(),
                 HeroEyesColorVO.unknown(),
-                h.getHair() != null && !h.getHair().isBlank() ? new HeroHairColorVO(h.getHair())
+                lotrHeroApiDTO.getHair() != null && !lotrHeroApiDTO.getHair().isBlank()
+                        ? new HeroHairColorVO(lotrHeroApiDTO.getHair())
                         : HeroHairColorVO.unknown(),
-                new HeroHeightVO(parseHeight(h.getHeight())),
+                new HeroHeightVO(parseHeight(lotrHeroApiDTO.getHeight())),
                 HeroDescriptionVO.unknown());
     }
 
@@ -170,5 +170,24 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
             }
         }
         return 0.0;
+    }
+
+    private Breed toBreed(String race) {
+        return getBreedIdByRace(race)
+                .map(breedId -> Breed.create(
+                        BreedIdVO.create(breedId),
+                        BreedNameVO.create(race)))
+                .orElse(Breed.unknown());
+    }
+
+    private Optional<String> getBreedIdByRace(String race) {
+        if (race == null) {
+            return Optional.empty();
+        }
+
+        return breedIdMap.entrySet().stream()
+                .filter(e -> race.equals(e.getValue()))
+                .map(Map.Entry::getKey)
+                .findFirst();
     }
 }
