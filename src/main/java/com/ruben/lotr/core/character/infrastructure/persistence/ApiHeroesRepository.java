@@ -14,6 +14,7 @@ import com.ruben.lotr.core.character.domain.model.Hero;
 import com.ruben.lotr.core.character.domain.model.Side;
 import com.ruben.lotr.core.character.domain.repository.HeroesRepositoryInterface;
 import com.ruben.lotr.core.character.domain.valueobject.BreedIdVO;
+import com.ruben.lotr.core.character.domain.valueobject.BreedNameVO;
 import com.ruben.lotr.core.character.domain.valueobject.HeroDescriptionVO;
 import com.ruben.lotr.core.character.domain.valueobject.HeroEyesColorVO;
 import com.ruben.lotr.core.character.domain.valueobject.HeroHairColorVO;
@@ -113,10 +114,11 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
     private Hero toDomain(LotrHeroApiDTO h, HeroIdVO heroId) {
 
         String[] nameParts = h.getName().split(" ", 2);
+        BreedNameVO breedName = BreedNameVO.create(h.getRace() != null ? h.getRace() : BreedNameVO.unknown().value());
 
         return Hero.create(
                 heroId,
-                Breed.unknown(),
+                Breed.create(BreedIdVO.generate(), breedName),
                 Side.unknown(),
                 new HeroNameVO(nameParts[0]),
                 nameParts.length > 1 && !nameParts[1].isBlank() ? new HeroLastNameVO(nameParts[1])
