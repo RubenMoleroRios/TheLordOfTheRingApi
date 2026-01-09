@@ -1,0 +1,52 @@
+services:
+  lotr-app:
+    container_name: lotr-app-dev
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    command: >
+      ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments=" -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+      - "35729:35729"
+      - "5005:5005"
+    env_file:
+      - .env
+    volumes:
+      - ../../src:/app/src
+      - ../../pom.xml:/app/pom.xml
+      - ../../.mvn:/app/.mvn
+      - ../../mvnw:/app/mvnw
+      - ../../target:/app/target
+    depends_on:
+      lotr-db:
+        condition: service_healthy
+    networks:
+      - net-backend
+
+  lotr-db:
+    container_name: lotr-db-dev
+    image: mysql/mysql-server:8.0
+    ports:
+      - "${DB_PORT_EXPOSED}:${DB_PORT}"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - lotr-db-dev-vol:/var/lib/mysql
+      - ../../sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      retries: 5
+    networks:
+      - net-backend
+
+networks:
+  net-backend:
+    driver: bridge
+
+volumes:
+  lotr-db-dev-vol:

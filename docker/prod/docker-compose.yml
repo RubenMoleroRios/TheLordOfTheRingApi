@@ -1,0 +1,45 @@
+services:
+  lotr-app:
+    container_name: lotr-app-prod
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    image: lotr-api:prod
+    restart: always
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    env_file:
+      - .env
+    depends_on:
+      lotr-db:
+        condition: service_healthy
+    networks:
+      - net-backend
+
+  lotr-db:
+    container_name: lotr-db-prod
+    image: mysql/mysql-server:8.0
+    restart: always
+    ports:
+      - "${DB_PORT_EXPOSED}:${DB_PORT}"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - lotr-db-prod-vol:/var/lib/mysql
+      - ../../sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      retries: 5
+    networks:
+      - net-backend
+
+networks:
+  net-backend:
+    driver: bridge
+
+volumes:
+  lotr-db-prod-vol:

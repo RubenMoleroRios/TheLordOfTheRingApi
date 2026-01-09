@@ -1,23 +1,47 @@
-FROM eclipse-temurin:17-jdk-jammy as builder
+############################################
+# Base (dependencias comunes)
+############################################
+FROM eclipse-temurin:17-jdk-jammy AS base
 WORKDIR /app
-# Copiar solo los archivos necesarios para descargar las dependencias
+
+# Maven wrapper + deps (cacheable)
 COPY mvnw .
 COPY .mvn/ .mvn/
 COPY pom.xml .
-# Descarga las dependencias
 RUN ./mvnw dependency:go-offline -B
-# Copiar el código fuente
+
+############################################
+# DEV – hot reload (Spring Boot DevTools)
+############################################
+FROM base AS dev
+
+# Puertos:
+#  - APP_PORT → API
+#  - 35729    → DevTools LiveReload
+EXPOSE 9525 35729
+
+# En DEV no copiamos el código:
+# lo monta docker-compose como volumen
+CMD ["./mvnw", "spring-boot:run"]
+
+############################################
+# BUILD – genera el JAR
+############################################
+FROM base AS build
 COPY src/ src/
-# Compila la aplicación
 RUN ./mvnw clean package -DskipTests
 
-# Etapa de producción
-FROM eclipse-temurin:17-jre-jammy
+############################################
+# PROD – runtime mínimo
+############################################
+FROM eclipse-temurin:17-jre-jammy AS prod
 WORKDIR /app
-# Variables de entorno para la JVM
+
 ENV TZ=Europe/Madrid
-ENV JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
-# Copiar el JAR desde la etapa de construcción
-COPY --from=builder /app/target/*.jar app.jar
+ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75"
+
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 9525
+
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app/app.jar"]
