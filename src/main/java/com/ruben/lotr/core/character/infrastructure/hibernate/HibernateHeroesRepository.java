@@ -51,17 +51,12 @@ public class HibernateHeroesRepository implements HeroesRepositoryInterface {
 
     @Override
     public Optional<Hero> findById(HeroIdVO id) {
-        try {
-            UUID uuid = UUID.fromString(id.value());
+        UUID heroId = UUID.fromString(id.value());
 
-            HeroEntity entity = entityManager.find(HeroEntity.class, uuid);
+        HeroEntity entity = entityManager.find(HeroEntity.class, heroId);
 
-            return Optional.ofNullable(entity)
-                    .map(mapper::toDomain);
-
-        } catch (IllegalArgumentException e) {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(entity)
+                .map(mapper::toDomain);
     }
 
     @Override
@@ -103,5 +98,4 @@ public class HibernateHeroesRepository implements HeroesRepositoryInterface {
                 .map(mapper::toDomain)
                 .toList();
     }
-
 }

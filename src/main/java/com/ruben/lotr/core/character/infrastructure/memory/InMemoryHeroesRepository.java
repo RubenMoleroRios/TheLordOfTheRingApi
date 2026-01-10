@@ -10,17 +10,7 @@ import com.ruben.lotr.core.character.domain.model.Breed;
 import com.ruben.lotr.core.character.domain.model.Hero;
 import com.ruben.lotr.core.character.domain.model.Side;
 import com.ruben.lotr.core.character.domain.repository.HeroesRepositoryInterface;
-import com.ruben.lotr.core.character.domain.valueobject.BreedIdVO;
-import com.ruben.lotr.core.character.domain.valueobject.BreedNameVO;
-import com.ruben.lotr.core.character.domain.valueobject.HeroDescriptionVO;
-import com.ruben.lotr.core.character.domain.valueobject.HeroEyesColorVO;
-import com.ruben.lotr.core.character.domain.valueobject.HeroHairColorVO;
-import com.ruben.lotr.core.character.domain.valueobject.HeroHeightVO;
-import com.ruben.lotr.core.character.domain.valueobject.HeroIdVO;
-import com.ruben.lotr.core.character.domain.valueobject.HeroLastNameVO;
-import com.ruben.lotr.core.character.domain.valueobject.HeroNameVO;
-import com.ruben.lotr.core.character.domain.valueobject.SideIdVO;
-import com.ruben.lotr.core.character.domain.valueobject.SideNameVO;
+import com.ruben.lotr.core.character.domain.valueobject.*;
 
 @Repository
 @Profile("in-memory")
@@ -30,7 +20,6 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
 
         public InMemoryHeroesRepository() {
 
-                // --- SIDES ---
                 Side good = Side.create(
                                 SideIdVO.create("2f4d6b8e-4f2a-4e3a-9f8d-3b1f6e9c5a21"),
                                 SideNameVO.create("Good"));
@@ -39,7 +28,6 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
                                 SideIdVO.create("9c7a1f43-6d8b-4c2e-b91f-4e3a6d5b2f88"),
                                 SideNameVO.create("Evil"));
 
-                // --- BREEDS ---
                 Breed human = Breed.create(
                                 BreedIdVO.create("6a1b9c4e-3f8d-4c2a-b7e1-5d9f3a2c8e41"),
                                 BreedNameVO.create("Human"));
