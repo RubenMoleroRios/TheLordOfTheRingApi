@@ -30,8 +30,9 @@ build/
 !**/src/test/**/build/
 
 ### VS Code ###
-.vscode/
+.vscode/*
 
+!.vscode/launch.json
 
-.env
+/docker/*/.env
 scripts/_out/
