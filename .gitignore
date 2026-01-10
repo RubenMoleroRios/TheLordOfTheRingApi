@@ -34,6 +34,5 @@ build/
 
 !.vscode/launch.json
 
-/docker/dev/.env
-/docker/prod/.env
+/docker/*/.env
 scripts/_out/

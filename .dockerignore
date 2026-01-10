@@ -9,7 +9,6 @@
 # Docker dev tooling
 ############################################
 docker/
-docker-compose.yml
 docker-build-and-up.sh
 
 ############################################
