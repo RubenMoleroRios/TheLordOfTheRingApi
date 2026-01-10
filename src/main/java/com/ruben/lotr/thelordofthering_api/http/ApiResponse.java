@@ -1,8 +1,8 @@
 package com.ruben.lotr.thelordofthering_api.http;
 
-import com.ruben.lotr.thelordofthering_api.exceptions.father.BaseDomainException;
-
 import org.springframework.http.ResponseEntity;
+
+import com.ruben.lotr.core.shared.domain.exception.BaseDomainException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

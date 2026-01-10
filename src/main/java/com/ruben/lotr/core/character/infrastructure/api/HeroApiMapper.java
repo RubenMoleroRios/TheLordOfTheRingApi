@@ -1,0 +1,76 @@
+package com.ruben.lotr.core.character.infrastructure.api;
+
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.stereotype.Component;
+
+import com.ruben.lotr.core.character.domain.model.Breed;
+import com.ruben.lotr.core.character.domain.model.Hero;
+import com.ruben.lotr.core.character.domain.model.Side;
+import com.ruben.lotr.core.character.domain.valueobject.*;
+import com.ruben.lotr.core.shared.util.NumberUtils;
+import com.ruben.lotr.thelordofthering_api.dto.response.LotrHeroApiDTO;
+
+@Component
+public class HeroApiMapper {
+
+    private final Map<String, Double> differentSizeMap = Map.of(
+            "Very tall", 3.0,
+            "Tall", 2.0,
+            "Tallest of the Elves of Gondolin", 2.5,
+            "Short", 1.0);
+
+    private final int heightCmToM = 100;
+
+    public Hero toDomain(
+            LotrHeroApiDTO dto,
+            HeroIdVO heroId,
+            Map<String, String> breedIdMap) {
+
+        String[] nameParts = dto.getName().split(" ", 2);
+
+        return Hero.create(
+                heroId,
+                toBreed(dto.getRace(), breedIdMap),
+                Side.unknown(),
+                HeroNameVO.create(nameParts[0]),
+                nameParts.length > 1 ? HeroLastNameVO.create(nameParts[1]) : HeroLastNameVO.unknown(),
+                HeroEyesColorVO.unknown(),
+                dto.getHair() != null && !dto.getHair().isBlank()
+                        ? HeroHairColorVO.create(dto.getHair())
+                        : HeroHairColorVO.unknown(),
+                HeroHeightVO.create(parseHeight(dto.getHeight())),
+                HeroDescriptionVO.unknown());
+    }
+
+    private Breed toBreed(String race, Map<String, String> breedIdMap) {
+        return getBreedIdByRace(race, breedIdMap)
+                .map(id -> Breed.create(BreedIdVO.create(id), BreedNameVO.create(race)))
+                .orElse(Breed.unknown());
+    }
+
+    private Optional<String> getBreedIdByRace(String race, Map<String, String> breedIdMap) {
+        return breedIdMap.entrySet().stream()
+                .filter(e -> e.getValue().equals(race))
+                .map(Map.Entry::getKey)
+                .findFirst();
+    }
+
+    private Double parseHeight(String height) {
+        if (height == null || height.isEmpty())
+            return null;
+
+        if (NumberUtils.isDouble(height.split("cm")[0]))
+            return Double.parseDouble(height.split("cm")[0]) / heightCmToM;
+
+        if (NumberUtils.isDouble(height.split("m")[0]))
+            return Double.parseDouble(height.split("m")[0]);
+
+        return differentSizeMap.entrySet().stream()
+                .filter(e -> height.contains(e.getKey()))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(null);
+    }
+}

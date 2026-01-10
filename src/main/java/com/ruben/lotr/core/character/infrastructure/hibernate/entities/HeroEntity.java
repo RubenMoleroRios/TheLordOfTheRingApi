@@ -1,55 +1,51 @@
-package com.ruben.lotr.thelordofthering_api.entities;
+package com.ruben.lotr.core.character.infrastructure.hibernate.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import java.util.UUID;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "heroes")
 public class HeroEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", columnDefinition = "BINARY(16)")
+    private UUID id;
+
+    @Column(name = "name", nullable = false, length = 40)
     private String name;
+
+    @Column(name = "last_name", length = 40)
     private String lastName;
+
+    @Column(name = "eyes_color", length = 30)
     private String eyesColor;
+
+    @Column(name = "hair_color", length = 30)
     private String hairColor;
+
+    @Column(name = "height")
     private Double height;
+
+    @Column(name = "description", length = 600)
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "id_breed", referencedColumnName = "id", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_breed", nullable = false)
     private BreedEntity breed;
-    @ManyToOne
-    @JoinColumn(name = "id_side", referencedColumnName = "id", insertable = false, updatable = false)
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_side", nullable = false)
     private SideEntity side;
 
-    public HeroEntity() {
+    protected HeroEntity() {
     }
 
-    public HeroEntity(Long id, String name, String lastName, String eyesColor,
-            String hairColor, Double height, String description, BreedEntity breed, SideEntity side) {
-        this.id = id;
-        this.name = name;
-        this.lastName = lastName;
-        this.eyesColor = eyesColor;
-        this.hairColor = hairColor;
-        this.height = height;
-        this.description = description;
-        this.breed = breed;
-        this.side = side;
-    }
-
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -116,5 +112,4 @@ public class HeroEntity {
     public void setSide(SideEntity side) {
         this.side = side;
     }
-
 }

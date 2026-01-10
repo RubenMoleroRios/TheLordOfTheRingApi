@@ -1,4 +1,4 @@
-package com.ruben.lotr.thelordofthering_api.dto;
+package com.ruben.lotr.thelordofthering_api.dto.response;
 
 public class LotrHeroApiDTO {
 
