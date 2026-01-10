@@ -2,10 +2,12 @@ package com.ruben.lotr.thelordofthering_api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = "com.ruben.lotr")
+@ComponentScan("com.ruben.lotr")
+@EntityScan("com.ruben.lotr.core.character.infrastructure.hibernate.entities")
 public class ThelordoftheringApiApplication {
 
 	public static void main(String[] args) {

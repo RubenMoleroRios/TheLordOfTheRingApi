@@ -1,9 +1,9 @@
 package com.ruben.lotr.thelordofthering_api.http;
 
-import com.ruben.lotr.thelordofthering_api.exceptions.father.BaseDomainException;
-
 import org.hibernate.TypeMismatchException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import com.ruben.lotr.core.shared.domain.exception.BaseDomainException;
 
 public class ExceptionHttpStatusMapper {
 

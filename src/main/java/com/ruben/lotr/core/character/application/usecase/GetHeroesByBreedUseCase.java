@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.ruben.lotr.thelordofthering_api.exceptions.BreedNotFoundException;
+import com.ruben.lotr.core.character.domain.exception.BreedNotFoundException;
 import com.ruben.lotr.core.character.domain.model.Hero;
 import com.ruben.lotr.core.character.domain.repository.HeroesRepositoryInterface;
 import com.ruben.lotr.core.character.domain.valueobject.BreedIdVO;

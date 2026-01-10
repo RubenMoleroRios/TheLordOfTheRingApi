@@ -4,7 +4,7 @@ import com.ruben.lotr.core.shared.domain.exception.BaseDomainException;
 
 public class BreedNotFoundException extends BaseDomainException {
 
-    public BreedNotFoundException(Long id) {
-        super(String.format("Breed <%d> not found.", id));
+    public BreedNotFoundException(String id) {
+        super(String.format("Breed <%s> not found.", id));
     }
 }
