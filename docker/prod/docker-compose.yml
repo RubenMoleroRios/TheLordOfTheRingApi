@@ -4,15 +4,22 @@ services:
     build:
       context: ../..
       dockerfile: Dockerfile
+      target: prod
     image: lotr-api:prod
     restart: always
     ports:
-      - "${APP_PORT}:${APP_PORT}"
+      - "${APP_PORT}:9525"
     env_file:
       - .env
     depends_on:
       lotr-db:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9525/api/health" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     networks:
       - net-backend
 
