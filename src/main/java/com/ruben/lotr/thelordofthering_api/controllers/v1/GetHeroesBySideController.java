@@ -1,4 +1,4 @@
-package com.ruben.lotr.thelordofthering_api.controllers;
+package com.ruben.lotr.thelordofthering_api.controllers.v1;
 
 import java.util.List;
 import java.util.Map;
@@ -8,33 +8,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ruben.lotr.core.character.application.response.presenter.HeroResponsePresenter;
-import com.ruben.lotr.core.character.application.usecase.GetHeroesUseCase;
+import com.ruben.lotr.core.character.application.usecase.GetHeroesBySideUseCase;
 import com.ruben.lotr.core.character.application.response.dto.HeroDTO;
 import com.ruben.lotr.thelordofthering_api.http.ApiResponse;
 import com.ruben.lotr.thelordofthering_api.http.HttpStatusEnum;
-
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
-@RequestMapping("/heroes")
-public class GetHeroesController {
+@RequestMapping("/v1/sides/{sideId}/heroes")
+public class GetHeroesBySideController {
 
-    private final GetHeroesUseCase getHeroesUseCase;
+    private final GetHeroesBySideUseCase getHeroesBySideUseCase;
     private final HeroResponsePresenter presenter;
 
-    public GetHeroesController(
-            GetHeroesUseCase getHeroesUseCase,
+    public GetHeroesBySideController(
+            GetHeroesBySideUseCase getHeroesBySideUseCase,
             HeroResponsePresenter presenter) {
-        this.getHeroesUseCase = getHeroesUseCase;
+        this.getHeroesBySideUseCase = getHeroesBySideUseCase;
         this.presenter = presenter;
     }
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> execute() {
-        List<HeroDTO> dtos = getHeroesUseCase.execute();
+    public ResponseEntity<Map<String, Object>> execute(@PathVariable String sideId) {
+        List<HeroDTO> dtos = getHeroesBySideUseCase.execute(sideId);
         return ApiResponse.success(
                 HttpStatusEnum.OK,
                 presenter.toCollection(dtos),
                 "Heroes successfully retrieved.");
     }
+
 }
