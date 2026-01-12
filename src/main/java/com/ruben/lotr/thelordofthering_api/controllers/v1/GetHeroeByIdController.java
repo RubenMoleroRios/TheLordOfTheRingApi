@@ -1,4 +1,4 @@
-package com.ruben.lotr.thelordofthering_api.controllers;
+package com.ruben.lotr.thelordofthering_api.controllers.v1;
 
 import java.util.Map;
 
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping("/heroes")
+@RequestMapping("/v1/heroes")
 public class GetHeroeByIdController {
 
     private final GetHeroeByIdUseCase getHeroeByIdUseCase;

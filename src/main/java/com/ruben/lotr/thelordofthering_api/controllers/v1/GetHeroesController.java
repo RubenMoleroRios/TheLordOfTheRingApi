@@ -1,4 +1,4 @@
-package com.ruben.lotr.thelordofthering_api.controllers;
+package com.ruben.lotr.thelordofthering_api.controllers.v1;
 
 import java.util.List;
 import java.util.Map;
@@ -8,30 +8,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ruben.lotr.core.character.application.response.presenter.HeroResponsePresenter;
-import com.ruben.lotr.core.character.application.usecase.GetHeroesByBreedUseCase;
+import com.ruben.lotr.core.character.application.usecase.GetHeroesUseCase;
 import com.ruben.lotr.core.character.application.response.dto.HeroDTO;
 import com.ruben.lotr.thelordofthering_api.http.ApiResponse;
 import com.ruben.lotr.thelordofthering_api.http.HttpStatusEnum;
+
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
-@RequestMapping("/breeds/{breedId}/heroes")
-public class GetHeroesByBreedController {
+@RequestMapping("/v1/heroes")
+public class GetHeroesController {
 
-    private final GetHeroesByBreedUseCase getHeroesByBreedUseCase;
+    private final GetHeroesUseCase getHeroesUseCase;
     private final HeroResponsePresenter presenter;
 
-    public GetHeroesByBreedController(
-            GetHeroesByBreedUseCase getHeroesByBreedUseCase,
+    public GetHeroesController(
+            GetHeroesUseCase getHeroesUseCase,
             HeroResponsePresenter presenter) {
-        this.getHeroesByBreedUseCase = getHeroesByBreedUseCase;
+        this.getHeroesUseCase = getHeroesUseCase;
         this.presenter = presenter;
     }
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> execute(@PathVariable String breedId) {
-        List<HeroDTO> dtos = getHeroesByBreedUseCase.execute(breedId);
+    public ResponseEntity<Map<String, Object>> execute() {
+        List<HeroDTO> dtos = getHeroesUseCase.execute();
         return ApiResponse.success(
                 HttpStatusEnum.OK,
                 presenter.toCollection(dtos),
