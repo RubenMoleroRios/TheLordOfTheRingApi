@@ -21,33 +21,41 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
         public InMemoryHeroesRepository() {
 
                 Side good = Side.create(
-                                SideIdVO.create("2f4d6b8e-4f2a-4e3a-9f8d-3b1f6e9c5a21"),
+                                SideIdVO.create("ce145f20-c5d3-42d2-89a1-1c9df74061f6"),
                                 SideNameVO.create("Good"));
 
                 Side evil = Side.create(
-                                SideIdVO.create("9c7a1f43-6d8b-4c2e-b91f-4e3a6d5b2f88"),
+                                SideIdVO.create("5471980f-31c9-4a4d-92bc-9d8fa27a031b"),
                                 SideNameVO.create("Evil"));
 
+                Side neutral = Side.create(
+                                SideIdVO.create("9f273070-5ffe-4910-ac7a-d1c916dfe7bd"),
+                                SideNameVO.create("Neutral"));
+
                 Breed human = Breed.create(
-                                BreedIdVO.create("6a1b9c4e-3f8d-4c2a-b7e1-5d9f3a2c8e41"),
+                                BreedIdVO.create("4f54a1d6-83b8-468a-996d-6f8c0b9c0330"),
                                 BreedNameVO.create("Human"));
 
                 Breed elf = Breed.create(
-                                BreedIdVO.create("d4f8b2c9-1a6e-4e3b-9f72-8c5a3e2b6d91"),
+                                BreedIdVO.create("f99fd696-399c-4417-9acb-72e3eeffb1c7"),
                                 BreedNameVO.create("Elf"));
 
                 Breed maia = Breed.create(
-                                BreedIdVO.create("a7c3d9f2-8b6e-4a1c-9e5f-2d8b6c4a1f73"),
+                                BreedIdVO.create("76e2686f-431f-40f0-9361-aed97f5b62a5"),
                                 BreedNameVO.create("Maia"));
 
                 Breed dwarf = Breed.create(
-                                BreedIdVO.create("f1c8a9b6-4d3e-4f7a-9c2b-8e5d6a3f1b24"),
+                                BreedIdVO.create("c593ae12-93b0-4c9a-a09c-3128335d628c"),
                                 BreedNameVO.create("Dwarf"));
+
+                Breed ent = Breed.create(
+                                BreedIdVO.create("770db63a-59db-4751-81d3-cedfb3934f28"),
+                                BreedNameVO.create("Ent"));
 
                 this.heroes = List.of(
 
                                 Hero.create(
-                                                HeroIdVO.create("b3e2c9d1-5a6f-4e8c-9f2a-7d1b6c8a3e45"),
+                                                HeroIdVO.create("96e45918-9804-4df0-8fb4-a9c9cfcfeae1"),
                                                 human,
                                                 good,
                                                 HeroNameVO.create("Aragorn"),
@@ -58,7 +66,7 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
                                                 HeroDescriptionVO.create("Heir of Isildur")),
 
                                 Hero.create(
-                                                HeroIdVO.create("8a6c3d2e-1f9b-4e7d-a5c8-9b2d6f1e4c73"),
+                                                HeroIdVO.create("54fa1b2e-e785-4e02-bf15-df030428c4b6"),
                                                 elf,
                                                 good,
                                                 HeroNameVO.create("Legolas"),
@@ -69,7 +77,7 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
                                                 HeroDescriptionVO.create("Prince of the Woodland Realm")),
 
                                 Hero.create(
-                                                HeroIdVO.create("4f9e8b2d-7c6a-4d1e-b5f3-9a2c8e6d1f54"),
+                                                HeroIdVO.create("dec5a206-5f7f-4867-a1c1-5aaaa25c6d60"),
                                                 maia,
                                                 good,
                                                 HeroNameVO.create("Gandalf"),
@@ -80,7 +88,7 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
                                                 HeroDescriptionVO.create("Wizard of the Istari order")),
 
                                 Hero.create(
-                                                HeroIdVO.create("e7c4a9b2-6f1d-4e8a-9b5c-3d2f6a1c8e90"),
+                                                HeroIdVO.create("edafd4a0-9ad3-4cdd-a9c8-0ca889c79a5e"),
                                                 dwarf,
                                                 good,
                                                 HeroNameVO.create("Gimli"),
@@ -91,7 +99,18 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
                                                 HeroDescriptionVO.create("Warrior of the Lonely Mountain")),
 
                                 Hero.create(
-                                                HeroIdVO.create("9d2f6c8a-1e5b-4c7f-a3e8-6b1d9c2f4a70"),
+                                                HeroIdVO.create("770db63a-59db-4751-81d3-cedfb3934f28"),
+                                                ent,
+                                                neutral,
+                                                HeroNameVO.create("Barbol"),
+                                                HeroLastNameVO.create("Treebread"),
+                                                HeroEyesColorVO.create("Brown"),
+                                                HeroHairColorVO.create("Green"),
+                                                HeroHeightVO.create(5.0),
+                                                HeroDescriptionVO.create("The oldest of the Ents")),
+
+                                Hero.create(
+                                                HeroIdVO.create("f53bc7a7-e8ff-47d3-9549-303db25a8b31"),
                                                 maia,
                                                 evil,
                                                 HeroNameVO.create("Sauron"),
@@ -102,7 +121,7 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
                                                 HeroDescriptionVO.create("The Dark Lord")),
 
                                 Hero.create(
-                                                HeroIdVO.create("1c9f8a6d-3b2e-4f5a-9d7c-8e6b1a2f4c50"),
+                                                HeroIdVO.create("193ece8a-4f61-4037-a750-ce94628e81ec"),
                                                 maia,
                                                 evil,
                                                 HeroNameVO.create("Saruman"),
