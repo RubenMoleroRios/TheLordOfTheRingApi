@@ -1,0 +1,428 @@
+{
+	"info": {
+		"_postman_id": "3ad12f3c-312d-4c69-8870-b5f7dbeee020",
+		"name": "lotr",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45137961",
+		"_collection_link": "https://ruben-5432178.postman.co/workspace/d1be54d4-1e6f-4aa3-8c3e-e7598f96433b/collection/45137961-3ad12f3c-312d-4c69-8870-b5f7dbeee020?action=share&source=collection_link&creator=45137961"
+	},
+	"item": [
+		{
+			"name": "dev",
+			"item": [
+				{
+					"name": "v1",
+					"item": [
+						{
+							"name": "Búsqueda de todos los heroes",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "uDkww8tmn60QewbDeaO8",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_base_dev}}/api/v1/heroes",
+									"host": [
+										"{{url_base_dev}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"heroes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Búsqueda por id de heroe",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "uDkww8tmn60QewbDeaO8",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_base_dev}}/api/v1/heroes/54fa1b2e-e785-4e02-bf15-df030428c4b6",
+									"host": [
+										"{{url_base_dev}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"heroes",
+										"54fa1b2e-e785-4e02-bf15-df030428c4b6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Búsqueda por bandos",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_base_dev}}/api/v1/sides/ce145f20-c5d3-42d2-89a1-1c9df74061f6/heroes",
+									"host": [
+										"{{url_base_dev}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"sides",
+										"ce145f20-c5d3-42d2-89a1-1c9df74061f6",
+										"heroes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Búsqueda por raza",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_base_dev}}/api/v1/breeds/f99fd696-399c-4417-9acb-72e3eeffb1c7/heroes",
+									"host": [
+										"{{url_base_dev}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"breeds",
+										"f99fd696-399c-4417-9acb-72e3eeffb1c7",
+										"heroes"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base_dev}}/api/health",
+							"host": [
+								"{{url_base_dev}}"
+							],
+							"path": [
+								"api",
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "external-api",
+			"item": [
+				{
+					"name": "v2",
+					"item": [
+						{
+							"name": "Búsqueda de todos los héroes",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "uDkww8tmn60QewbDeaO8",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_base_external_api}}/character",
+									"host": [
+										"{{url_base_external_api}}"
+									],
+									"path": [
+										"character"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Búsqueda por nombre de heroe",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "uDkww8tmn60QewbDeaO8",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_base_external_api}}/character?name=Ar-Pharazôn",
+									"host": [
+										"{{url_base_external_api}}"
+									],
+									"path": [
+										"character"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Ar-Pharazôn"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Búsqueda por raza",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "uDkww8tmn60QewbDeaO8",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_base_external_api}}/character?race=Hobbit",
+									"host": [
+										"{{url_base_external_api}}"
+									],
+									"path": [
+										"character"
+									],
+									"query": [
+										{
+											"key": "race",
+											"value": "Hobbit"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "prod",
+			"item": [
+				{
+					"name": "v1",
+					"item": [
+						{
+							"name": "Búsqueda por bandos",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_base_dev}}/api/v1/sides/ce145f20-c5d3-42d2-89a1-1c9df74061f6/heroes",
+									"host": [
+										"{{url_base_dev}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"sides",
+										"ce145f20-c5d3-42d2-89a1-1c9df74061f6",
+										"heroes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Búsqueda por bandos",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_base_prod}}/api/v1/sides/ce145f20-c5d3-42d2-89a1-1c9df74061f6/heroes",
+									"host": [
+										"{{url_base_prod}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"sides",
+										"ce145f20-c5d3-42d2-89a1-1c9df74061f6",
+										"heroes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Búsqueda por id de heroe",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "uDkww8tmn60QewbDeaO8",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_base_prod}}/api/v1/heroes/0c553a78-a6e9-4998-b661-0e06bb10588d",
+									"host": [
+										"{{url_base_prod}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"heroes",
+										"0c553a78-a6e9-4998-b661-0e06bb10588d"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Búsqueda de todos los heroes",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "uDkww8tmn60QewbDeaO8",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_base_prod}}/api/v1/heroes",
+									"host": [
+										"{{url_base_prod}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"heroes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Búsqueda por raza",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_base_prod}}/api/v1/breeds/ce145f20-c5d3-42d2-89a1-1c9df74061f6/heroes",
+									"host": [
+										"{{url_base_prod}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"breeds",
+										"ce145f20-c5d3-42d2-89a1-1c9df74061f6",
+										"heroes"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url_base_dev",
+			"value": "localhost:9525"
+		},
+		{
+			"key": "url_base_prod",
+			"value": "localhost:9526"
+		},
+		{
+			"key": "url_base_external_api",
+			"value": "https://the-one-api.dev/v2"
+		}
+	]
+}
