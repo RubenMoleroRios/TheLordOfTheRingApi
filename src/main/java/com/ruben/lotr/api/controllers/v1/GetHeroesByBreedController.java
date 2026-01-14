@@ -34,6 +34,6 @@ public class GetHeroesByBreedController {
         return ApiResponse.success(
                 HttpStatusEnum.OK,
                 response,
-                "Heroes successfully retrieved");
+                "Heroes successfully retrieved.");
     }
 }

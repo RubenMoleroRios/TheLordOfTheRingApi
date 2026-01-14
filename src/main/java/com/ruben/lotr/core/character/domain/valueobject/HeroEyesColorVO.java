@@ -17,6 +17,6 @@ public class HeroEyesColorVO extends StringValueObject {
     }
 
     public static HeroEyesColorVO unknown() {
-        return create("Unknown");
+        return create("Unknown.");
     }
 }

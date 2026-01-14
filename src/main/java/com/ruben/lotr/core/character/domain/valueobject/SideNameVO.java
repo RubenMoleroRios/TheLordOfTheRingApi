@@ -18,6 +18,6 @@ public class SideNameVO extends StringValueObject {
     }
 
     public static SideNameVO unknown() {
-        return create("Unknown Side Name");
+        return create("Unknown Side Name.");
     }
 }

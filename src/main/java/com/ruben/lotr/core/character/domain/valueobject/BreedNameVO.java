@@ -18,6 +18,6 @@ public class BreedNameVO extends StringValueObject {
     }
 
     public static BreedNameVO unknown() {
-        return create("Unknown Breed");
+        return create("Unknown Breed.");
     }
 }
