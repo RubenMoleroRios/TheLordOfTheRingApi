@@ -17,7 +17,7 @@ public class HeroHairColorVO extends StringValueObject {
     }
 
     public static HeroHairColorVO unknown() {
-        return create("Unknown");
+        return create("Unknown.");
     }
 
     @Override

@@ -31,6 +31,6 @@ public class GetHeroeByIdController {
         return ApiResponse.success(
                 HttpStatusEnum.OK,
                 response,
-                "Héroe encontrado exitosamente");
+                "Heroes successfully retrieved.");
     }
 }

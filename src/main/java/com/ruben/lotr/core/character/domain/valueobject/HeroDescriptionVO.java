@@ -21,7 +21,7 @@ public class HeroDescriptionVO extends StringValueObject {
     }
 
     public static HeroDescriptionVO unknown() {
-        return create("Unknown");
+        return create("Unknown. ");
     }
 
     @Override
