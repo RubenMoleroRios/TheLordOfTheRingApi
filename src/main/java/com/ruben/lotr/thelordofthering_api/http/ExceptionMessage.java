@@ -10,6 +10,6 @@ public class ExceptionMessage {
             return String.format("Format not allowed: <%s> must be a number.",
                     ex.getValue() != null ? ex.getValue() : "null");
         }
-        return exception.getMessage() != null ? exception.getMessage() : "Internal server error";
+        return exception.getMessage() != null ? exception.getMessage() : "Internal server error.";
     }
 }
