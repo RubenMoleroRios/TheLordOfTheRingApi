@@ -1,6 +1,6 @@
-package com.ruben.lotr.thelordofthering_api.dto.response;
+package com.ruben.lotr.core.character.infrastructure.external.lotr.client;
 
-public class LotrHeroApiDTO {
+public class LotrHeroResponseApiDTO {
 
     private String id;
     private String name;

@@ -1,4 +1,4 @@
-package com.ruben.lotr.thelordofthering_api.controllers;
+package com.ruben.lotr.api.controllers;
 
 import java.util.Map;
 

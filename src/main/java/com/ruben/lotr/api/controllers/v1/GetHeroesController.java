@@ -1,4 +1,4 @@
-package com.ruben.lotr.thelordofthering_api.controllers.v1;
+package com.ruben.lotr.api.controllers.v1;
 
 import java.util.List;
 import java.util.Map;
@@ -7,11 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ruben.lotr.core.character.application.response.presenter.HeroResponsePresenter;
+import com.ruben.lotr.api.dto.response.HeroResponseDTO;
+import com.ruben.lotr.api.http.ApiResponse;
+import com.ruben.lotr.api.http.HttpStatusEnum;
 import com.ruben.lotr.core.character.application.usecase.GetHeroesUseCase;
-import com.ruben.lotr.core.character.application.response.dto.HeroDTO;
-import com.ruben.lotr.thelordofthering_api.http.ApiResponse;
-import com.ruben.lotr.thelordofthering_api.http.HttpStatusEnum;
+import com.ruben.lotr.core.character.domain.model.Hero;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -20,21 +20,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class GetHeroesController {
 
     private final GetHeroesUseCase getHeroesUseCase;
-    private final HeroResponsePresenter presenter;
 
-    public GetHeroesController(
-            GetHeroesUseCase getHeroesUseCase,
-            HeroResponsePresenter presenter) {
+    public GetHeroesController(GetHeroesUseCase getHeroesUseCase) {
         this.getHeroesUseCase = getHeroesUseCase;
-        this.presenter = presenter;
     }
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> execute() {
-        List<HeroDTO> dtos = getHeroesUseCase.execute();
+        List<Hero> heroes = getHeroesUseCase.execute();
+
+        List<HeroResponseDTO> response = heroes.stream()
+                .map(HeroResponseDTO::from)
+                .toList();
         return ApiResponse.success(
                 HttpStatusEnum.OK,
-                presenter.toCollection(dtos),
+                response,
                 "Heroes successfully retrieved.");
     }
 }
