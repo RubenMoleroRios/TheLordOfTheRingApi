@@ -1,4 +1,4 @@
-package com.ruben.lotr.thelordofthering_api.controllers.v1;
+package com.ruben.lotr.api.controllers.v1;
 
 import java.util.List;
 import java.util.Map;
@@ -7,11 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ruben.lotr.core.character.application.response.presenter.HeroResponsePresenter;
+import com.ruben.lotr.api.dto.response.HeroResponseDTO;
+import com.ruben.lotr.api.http.ApiResponse;
+import com.ruben.lotr.api.http.HttpStatusEnum;
 import com.ruben.lotr.core.character.application.usecase.GetHeroesBySideUseCase;
-import com.ruben.lotr.core.character.application.response.dto.HeroDTO;
-import com.ruben.lotr.thelordofthering_api.http.ApiResponse;
-import com.ruben.lotr.thelordofthering_api.http.HttpStatusEnum;
+import com.ruben.lotr.core.character.domain.model.Hero;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -20,21 +21,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class GetHeroesBySideController {
 
     private final GetHeroesBySideUseCase getHeroesBySideUseCase;
-    private final HeroResponsePresenter presenter;
 
-    public GetHeroesBySideController(
-            GetHeroesBySideUseCase getHeroesBySideUseCase,
-            HeroResponsePresenter presenter) {
+    public GetHeroesBySideController(GetHeroesBySideUseCase getHeroesBySideUseCase) {
         this.getHeroesBySideUseCase = getHeroesBySideUseCase;
-        this.presenter = presenter;
     }
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> execute(@PathVariable String sideId) {
-        List<HeroDTO> dtos = getHeroesBySideUseCase.execute(sideId);
+        List<Hero> heroes = getHeroesBySideUseCase.execute(sideId);
+
+        List<HeroResponseDTO> response = heroes.stream()
+                .map(HeroResponseDTO::from)
+                .toList();
         return ApiResponse.success(
                 HttpStatusEnum.OK,
-                presenter.toCollection(dtos),
+                response,
                 "Heroes successfully retrieved.");
     }
 

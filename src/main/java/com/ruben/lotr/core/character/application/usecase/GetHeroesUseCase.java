@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.ruben.lotr.core.character.application.response.dto.HeroDTO;
-import com.ruben.lotr.core.character.application.response.mapper.HeroResponseMapper;
 import com.ruben.lotr.core.character.domain.model.Hero;
 import com.ruben.lotr.core.character.domain.repository.HeroesRepositoryInterface;
 
@@ -14,19 +12,15 @@ import com.ruben.lotr.core.character.domain.repository.HeroesRepositoryInterface
 public class GetHeroesUseCase {
 
     private final HeroesRepositoryInterface heroesRepository;
-    private final HeroResponseMapper heroResponseMapper;
 
-    public GetHeroesUseCase(
-            HeroesRepositoryInterface heroesRepository,
-            HeroResponseMapper heroResponseMapper) {
+    public GetHeroesUseCase(HeroesRepositoryInterface heroesRepository) {
         this.heroesRepository = heroesRepository;
-        this.heroResponseMapper = heroResponseMapper;
     }
 
-    public List<HeroDTO> execute() {
+    public List<Hero> execute() {
 
         List<Hero> heroes = heroesRepository.findAll();
 
-        return heroResponseMapper.mapMany(heroes);
+        return heroes;
     }
 }

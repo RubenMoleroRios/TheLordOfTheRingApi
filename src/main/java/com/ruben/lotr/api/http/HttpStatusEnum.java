@@ -1,4 +1,4 @@
-package com.ruben.lotr.thelordofthering_api.http;
+package com.ruben.lotr.api.http;
 
 import org.springframework.http.HttpStatus;
 

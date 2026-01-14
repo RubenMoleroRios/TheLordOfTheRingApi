@@ -1,4 +1,4 @@
-package com.ruben.lotr.core.character.infrastructure.api;
+package com.ruben.lotr.core.character.infrastructure.external.lotr;
 
 import java.util.List;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.ruben.lotr.core.character.domain.model.Hero;
@@ -14,12 +14,12 @@ import com.ruben.lotr.core.character.domain.repository.HeroesRepositoryInterface
 import com.ruben.lotr.core.character.domain.valueobject.BreedIdVO;
 import com.ruben.lotr.core.character.domain.valueobject.HeroIdVO;
 import com.ruben.lotr.core.character.domain.valueobject.SideIdVO;
-import com.ruben.lotr.thelordofthering_api.dto.response.LortApiResponseDTO;
-import com.ruben.lotr.thelordofthering_api.dto.response.LotrHeroApiDTO;
+import com.ruben.lotr.core.character.infrastructure.external.lotr.client.LotrHeroResponseApiDTO;
+import com.ruben.lotr.core.character.infrastructure.external.lotr.client.LotrApiResponseDTO;
 
-@Service
+@Repository
 @Profile("api")
-public class ApiHeroesRepository implements HeroesRepositoryInterface {
+public class LotrHeroesRepository implements HeroesRepositoryInterface {
 
     private final WebClient webClient;
     private final HeroApiMapper mapper;
@@ -48,7 +48,7 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
             HeroIdVO.create("550e8400-e29b-41d4-a716-446655440009").value(), "5cd99d4bde30eff6ebccfd0d",
             HeroIdVO.create("550e8400-e29b-41d4-a716-446655440010").value(), "5cd99d4bde30eff6ebccfea0");
 
-    public ApiHeroesRepository(WebClient.Builder builder, HeroApiMapper mapper) {
+    public LotrHeroesRepository(WebClient.Builder builder, HeroApiMapper mapper) {
         this.webClient = builder.baseUrl("https://the-one-api.dev/v2").build();
         this.mapper = mapper;
     }
@@ -60,7 +60,7 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
         if (externalId == null)
             return Optional.empty();
 
-        List<LotrHeroApiDTO> result = getHeroesFromApi("/" + externalId);
+        List<LotrHeroResponseApiDTO> result = getHeroesFromApi("/" + externalId);
         if (result.isEmpty())
             return Optional.empty();
 
@@ -93,12 +93,12 @@ public class ApiHeroesRepository implements HeroesRepositoryInterface {
         return List.of(); // no soportado por la API
     }
 
-    private List<LotrHeroApiDTO> getHeroesFromApi(String slug) {
-        LortApiResponseDTO response = webClient.get()
+    private List<LotrHeroResponseApiDTO> getHeroesFromApi(String slug) {
+        LotrApiResponseDTO response = webClient.get()
                 .uri("/character" + slug)
                 .header("Authorization", "Bearer " + apiToken)
                 .retrieve()
-                .bodyToMono(LortApiResponseDTO.class)
+                .bodyToMono(LotrApiResponseDTO.class)
                 .block();
 
         return response != null && response.getDocs() != null

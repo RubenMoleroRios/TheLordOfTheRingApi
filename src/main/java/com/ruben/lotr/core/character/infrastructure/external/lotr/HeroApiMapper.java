@@ -1,4 +1,4 @@
-package com.ruben.lotr.core.character.infrastructure.api;
+package com.ruben.lotr.core.character.infrastructure.external.lotr;
 
 import java.util.Map;
 import java.util.Optional;
@@ -9,8 +9,8 @@ import com.ruben.lotr.core.character.domain.model.Breed;
 import com.ruben.lotr.core.character.domain.model.Hero;
 import com.ruben.lotr.core.character.domain.model.Side;
 import com.ruben.lotr.core.character.domain.valueobject.*;
+import com.ruben.lotr.core.character.infrastructure.external.lotr.client.LotrHeroResponseApiDTO;
 import com.ruben.lotr.core.shared.util.NumberUtils;
-import com.ruben.lotr.thelordofthering_api.dto.response.LotrHeroApiDTO;
 
 @Component
 public class HeroApiMapper {
@@ -24,7 +24,7 @@ public class HeroApiMapper {
     private final int heightCmToM = 100;
 
     public Hero toDomain(
-            LotrHeroApiDTO dto,
+            LotrHeroResponseApiDTO dto,
             HeroIdVO heroId,
             Map<String, String> breedIdMap) {
 

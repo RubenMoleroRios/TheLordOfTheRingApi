@@ -1,4 +1,4 @@
-package com.ruben.lotr.thelordofthering_api;
+package com.ruben.lotr.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
