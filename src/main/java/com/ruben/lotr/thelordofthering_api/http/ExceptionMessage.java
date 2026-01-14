@@ -7,9 +7,9 @@ public class ExceptionMessage {
     public static String getMessage(Throwable exception) {
         if (exception instanceof MethodArgumentTypeMismatchException) {
             MethodArgumentTypeMismatchException ex = (MethodArgumentTypeMismatchException) exception;
-            return String.format("Formato no permitido: <%s> debe estar compuesto solo por números.",
+            return String.format("Format not allowed: <%s> must be a number.",
                     ex.getValue() != null ? ex.getValue() : "null");
         }
-        return exception.getMessage() != null ? exception.getMessage() : "Error interno del servidor";
+        return exception.getMessage() != null ? exception.getMessage() : "Internal server error";
     }
 }
