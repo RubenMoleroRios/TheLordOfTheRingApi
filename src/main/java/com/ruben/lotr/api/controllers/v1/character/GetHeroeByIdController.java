@@ -1,4 +1,4 @@
-package com.ruben.lotr.api.controllers.v1;
+package com.ruben.lotr.api.controllers.v1.character;
 
 import java.util.Map;
 
