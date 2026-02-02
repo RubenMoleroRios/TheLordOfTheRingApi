@@ -7,6 +7,8 @@ import com.ruben.lotr.core.auth.domain.valueobject.UserEmailVO;
 
 import org.springframework.stereotype.Service;
 
+import com.ruben.lotr.core.auth.application.dto.AuthResponse;
+import com.ruben.lotr.core.auth.application.mapper.AuthResponseMapper;
 import com.ruben.lotr.core.auth.application.service.JwtTokenGenerator;
 import com.ruben.lotr.core.auth.domain.exception.InvalidCredentialsException;
 
@@ -26,7 +28,7 @@ public final class LoginUseCase {
         this.jwtTokenGenerator = jwtTokenGenerator;
     }
 
-    public String execute(LoginUserCommand command) {
+    public AuthResponse execute(LoginUserCommand command) {
 
         UserEmailVO email = UserEmailVO.create(command.email());
 
@@ -40,7 +42,8 @@ public final class LoginUseCase {
         if (!valid) {
             throw new InvalidCredentialsException();
         }
+        String token = jwtTokenGenerator.generate(user);
 
-        return jwtTokenGenerator.generate(user);
+        return AuthResponseMapper.from(user, token);
     }
 }

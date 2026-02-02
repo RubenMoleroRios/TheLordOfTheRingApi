@@ -10,10 +10,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.ruben.lotr.core.auth.domain.exception.InvalidCredentialsException;
+
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    public static final String JWT_EXCEPTION_ATTR = "JWT_EXCEPTION";
 
     private final JwtTokenGeneratorImpl jwtTokenGenerator;
 
@@ -36,20 +39,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = header.substring(7);
 
-        if (jwtTokenGenerator.validate(token)) {
-            String userId = jwtTokenGenerator.getUserId(token);
-
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    userId,
-                    null,
-                    null);
-
-            authentication.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request));
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (!jwtTokenGenerator.validate(token)) {
+            request.setAttribute(JWT_EXCEPTION_ATTR, new InvalidCredentialsException());
+            request.getRequestDispatcher("/error/auth").forward(request, response);
+            return;
         }
 
+        String userId = jwtTokenGenerator.getUserId(token);
+
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null,
+                null);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         filterChain.doFilter(request, response);
     }
 }

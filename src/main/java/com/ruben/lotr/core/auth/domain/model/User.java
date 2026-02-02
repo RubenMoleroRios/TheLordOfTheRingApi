@@ -4,7 +4,7 @@ import org.springframework.lang.NonNull;
 
 import com.ruben.lotr.core.auth.domain.valueobject.UserEmailVO;
 import com.ruben.lotr.core.auth.domain.valueobject.UserIdVO;
-import com.ruben.lotr.core.auth.domain.valueobject.UserPasswordVO;
+import com.ruben.lotr.core.auth.domain.valueobject.UserPasswordHashVO;
 import com.ruben.lotr.core.auth.domain.valueobject.UserNameVO;
 
 public final class User {
@@ -12,13 +12,13 @@ public final class User {
     private final UserIdVO id;
     private final UserNameVO name;
     private final UserEmailVO email;
-    private final UserPasswordVO password;
+    private final UserPasswordHashVO password;
 
     private User(
             UserIdVO id,
             UserNameVO name,
             UserEmailVO email,
-            UserPasswordVO password) {
+            UserPasswordHashVO password) {
 
         this.id = id;
         this.name = name;
@@ -26,15 +26,10 @@ public final class User {
         this.password = password;
     }
 
-    /*
-     * =========================
-     * CASO 1: REGISTRO
-     * =========================
-     */
     public static @NonNull User create(
             @NonNull UserNameVO name,
             @NonNull UserEmailVO email,
-            @NonNull UserPasswordVO password) {
+            @NonNull UserPasswordHashVO password) {
 
         return new User(
                 UserIdVO.generate(),
@@ -43,16 +38,11 @@ public final class User {
                 password);
     }
 
-    /*
-     * =========================
-     * CASO 2: RECONSTRUCCIÓN
-     * =========================
-     */
     public static @NonNull User fromPersistence(
             @NonNull UserIdVO id,
             @NonNull UserNameVO name,
             @NonNull UserEmailVO email,
-            @NonNull UserPasswordVO password) {
+            @NonNull UserPasswordHashVO password) {
 
         return new User(id, name, email, password);
     }
@@ -69,7 +59,7 @@ public final class User {
         return email;
     }
 
-    public UserPasswordVO password() {
+    public UserPasswordHashVO password() {
         return password;
     }
 }

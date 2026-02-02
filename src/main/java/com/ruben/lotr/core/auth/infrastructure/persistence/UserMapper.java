@@ -8,7 +8,7 @@ import com.ruben.lotr.core.auth.domain.model.User;
 import com.ruben.lotr.core.auth.domain.valueobject.UserNameVO;
 import com.ruben.lotr.core.auth.domain.valueobject.UserEmailVO;
 import com.ruben.lotr.core.auth.domain.valueobject.UserIdVO;
-import com.ruben.lotr.core.auth.domain.valueobject.UserPasswordVO;
+import com.ruben.lotr.core.auth.domain.valueobject.UserPasswordHashVO;
 import com.ruben.lotr.core.auth.infrastructure.persistence.entity.UserEntity;
 
 public final class UserMapper {
@@ -26,6 +26,6 @@ public final class UserMapper {
                 UserIdVO.create(entity.getId().toString()),
                 UserNameVO.create(entity.getName()),
                 UserEmailVO.create(entity.getEmail()),
-                UserPasswordVO.fromHashed(entity.getPassword()));
+                UserPasswordHashVO.fromHash(entity.getPassword()));
     }
 }

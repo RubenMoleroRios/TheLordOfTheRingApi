@@ -26,7 +26,13 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             HttpServletResponse response,
             AuthenticationException authException) throws IOException {
 
-        ResponseEntity<Map<String, Object>> apiResponse = ApiResponse.fromException(new MissingTokenException());
+        Object ex = request.getAttribute(JwtAuthenticationFilter.JWT_EXCEPTION_ATTR);
+
+        Throwable exception = (ex instanceof Throwable)
+                ? (Throwable) ex
+                : new MissingTokenException();
+
+        ResponseEntity<Map<String, Object>> apiResponse = ApiResponse.fromException(exception);
 
         response.setStatus(apiResponse.getStatusCode().value());
         response.setContentType("application/json");
