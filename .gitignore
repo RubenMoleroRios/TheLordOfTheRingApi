@@ -36,3 +36,7 @@ build/
 
 /docker/*/.env
 scripts/_out/
+
+### Volumes ###
+
+volumes/
