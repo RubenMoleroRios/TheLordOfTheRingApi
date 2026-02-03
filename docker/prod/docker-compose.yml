@@ -1,14 +1,14 @@
 services:
   lotr-app:
-    container_name: lotr-app-prod
+    container_name: ${BACKEND_CONTAINER_NAME:?}_prod
+    image: ${BACKEND_IMAGE_NAME:?}:${IMAGE_TAG:?}
     build:
       context: ../..
       dockerfile: Dockerfile
       target: prod
-    image: lotr-api:prod
     restart: always
     ports:
-      - "${APP_PORT}:9525"
+      - "${APP_HOST_PORT}:${API_CONTAINER_PORT}"
     env_file:
       - .env
     depends_on:
@@ -24,11 +24,11 @@ services:
       - net-backend
 
   lotr-db:
-    container_name: lotr-db-prod
+    container_name: ${BACKEND_DB_CONTAINER_NAME:?}
     image: mysql/mysql-server:8.0
     restart: always
     ports:
-      - "${DB_PORT_EXPOSED}:${DB_PORT}"
+      - "${DB_HOST_PORT}:${DB_CONTAINER_PORT}"
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
