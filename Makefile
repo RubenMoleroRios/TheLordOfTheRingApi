@@ -17,7 +17,7 @@ help:
 	@echo "Development"
 	@echo "  make dev-up           Start DEV environment"
 	@echo "  make dev-down         Stop DEV environment"
-	@echo "  make dev-down-vol     Stop DEV and remove volumes"
+	@echo "  make dev-down-vol     Stop DEV environment and remove volumes"
 	@echo "  make dev-restart      Restart DEV environment"
 	@echo "  make dev-logs         Show DEV application logs"
 	@echo "  make dev-build        Build DEV images without cache"
