@@ -1,7 +1,7 @@
 services:
   lotr-app:
-    container_name: ${BACKEND_CONTAINER_NAME}_dev
-    image: ${BACKEND_IMAGE_NAME}:${IMAGE_TAG}
+    container_name: ${BACKEND_CONTAINER_NAME:?}_dev
+    image: ${BACKEND_IMAGE_NAME:?}:${IMAGE_TAG:?}
     build:
       context: ../..
       dockerfile: Dockerfile
@@ -33,7 +33,7 @@ services:
       - net-backend
 
   lotr-db:
-    container_name: ${BACKEND_DB_CONTAINER_NAME}
+    container_name: ${BACKEND_DB_CONTAINER_NAME:?}
     image: mysql/mysql-server:8.0
     ports:
       - "${DB_HOST_PORT}:${DB_CONTAINER_PORT}"
