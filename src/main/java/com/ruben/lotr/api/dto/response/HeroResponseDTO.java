@@ -1,6 +1,6 @@
 package com.ruben.lotr.api.dto.response;
 
-import com.ruben.lotr.core.character.domain.model.Hero;
+import com.ruben.lotr.core.hero.domain.model.Hero;
 
 public record HeroResponseDTO(
                 String id,
