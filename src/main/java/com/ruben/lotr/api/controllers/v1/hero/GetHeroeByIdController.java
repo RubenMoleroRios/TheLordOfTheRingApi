@@ -8,16 +8,16 @@ import org.springframework.web.bind.annotation.*;
 import com.ruben.lotr.api.dto.response.HeroResponseDTO;
 import com.ruben.lotr.api.http.ApiResponse;
 import com.ruben.lotr.api.http.HttpStatusEnum;
-import com.ruben.lotr.core.hero.application.usecase.GetHeroeByIdUseCase;
+import com.ruben.lotr.core.hero.application.usecase.GetHeroByIdUseCase;
 import com.ruben.lotr.core.hero.domain.model.Hero;
 
 @RestController
 @RequestMapping("/v1/heroes")
 public class GetHeroeByIdController {
 
-    private final GetHeroeByIdUseCase getHeroeByIdUseCase;
+    private final GetHeroByIdUseCase getHeroeByIdUseCase;
 
-    public GetHeroeByIdController(GetHeroeByIdUseCase getHeroeByIdUseCase) {
+    public GetHeroeByIdController(GetHeroByIdUseCase getHeroeByIdUseCase) {
         this.getHeroeByIdUseCase = getHeroeByIdUseCase;
     }
 

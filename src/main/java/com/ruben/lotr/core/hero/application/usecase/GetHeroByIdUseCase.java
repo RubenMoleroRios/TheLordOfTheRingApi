@@ -8,11 +8,11 @@ import com.ruben.lotr.core.hero.domain.repository.HeroesRepositoryInterface;
 import com.ruben.lotr.core.hero.domain.valueobject.hero.HeroIdVO;
 
 @Service
-public class GetHeroeByIdUseCase {
+public class GetHeroByIdUseCase {
 
     private HeroesRepositoryInterface heroesRepository;
 
-    public GetHeroeByIdUseCase(HeroesRepositoryInterface heroesRepository) {
+    public GetHeroByIdUseCase(HeroesRepositoryInterface heroesRepository) {
         this.heroesRepository = heroesRepository;
     }
 
