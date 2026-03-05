@@ -9,7 +9,7 @@ public final class UserNameVO extends StringValueObject {
     private static final int MIN = 3;
     private static final int MAX = 50;
 
-    public UserNameVO(String value) {
+    private UserNameVO(String value) {
         super(value);
     }
 

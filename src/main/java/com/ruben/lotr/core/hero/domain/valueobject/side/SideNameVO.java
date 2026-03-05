@@ -1,10 +1,12 @@
 package com.ruben.lotr.core.hero.domain.valueobject.side;
 
+import org.springframework.lang.NonNull;
+
 import com.ruben.lotr.core.shared.domain.valueobject.StringValueObject;
 
 public class SideNameVO extends StringValueObject {
 
-    public SideNameVO(String value) {
+    private SideNameVO(String value) {
         super(value);
     }
 
@@ -13,11 +15,11 @@ public class SideNameVO extends StringValueObject {
         return false;
     }
 
-    public static SideNameVO create(String value) {
+    public static @NonNull SideNameVO create(String value) {
         return new SideNameVO(value);
     }
 
-    public static SideNameVO unknown() {
+    public static @NonNull SideNameVO unknown() {
         return create("Unknown Side Name.");
     }
 }

@@ -1,5 +1,7 @@
 package com.ruben.lotr.core.hero.domain.model;
 
+import org.springframework.lang.NonNull;
+
 import com.ruben.lotr.core.hero.domain.valueobject.breed.BreedIdVO;
 import com.ruben.lotr.core.hero.domain.valueobject.breed.BreedNameVO;
 
@@ -13,11 +15,11 @@ public class Breed {
         this.name = name;
     }
 
-    public static Breed create(BreedIdVO id, BreedNameVO name) {
+    public static @NonNull Breed create(@NonNull BreedIdVO id, @NonNull BreedNameVO name) {
         return new Breed(id, name);
     }
 
-    public static Breed unknown() {
+    public static @NonNull Breed unknown() {
         return create(BreedIdVO.unknown(), BreedNameVO.unknown());
     }
 

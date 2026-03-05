@@ -1,7 +1,10 @@
 package com.ruben.lotr.core.shared.domain.valueobject;
 
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
+
+import org.springframework.lang.NonNull;
 
 import com.ruben.lotr.core.shared.domain.exception.InvalidUuidException;
 
@@ -13,8 +16,9 @@ public abstract class UuidValueObject {
         ensureIsValidUuid(value);
     }
 
-    protected static <T extends UuidValueObject> T generate(Function<String, T> creator) {
-        return creator.apply(UUID.randomUUID().toString());
+    protected static @NonNull <T extends UuidValueObject> T generate(@NonNull Function<String, T> creator) {
+        final T result = creator.apply(UUID.randomUUID().toString());
+        return Objects.requireNonNull(result, "UuidValueObject.generate: creator returned null");
     }
 
     public final String value() {
@@ -51,7 +55,8 @@ public abstract class UuidValueObject {
 
     protected static <T extends UuidValueObject> T create(
             String value,
-            Function<String, T> creator) {
-        return creator.apply(value);
+            @NonNull Function<String, T> creator) {
+        final T result = creator.apply(value);
+        return Objects.requireNonNull(result, "UuidValueObject.create: creator returned null");
     }
 }

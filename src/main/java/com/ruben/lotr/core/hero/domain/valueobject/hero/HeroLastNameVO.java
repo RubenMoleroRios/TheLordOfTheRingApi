@@ -1,9 +1,12 @@
 package com.ruben.lotr.core.hero.domain.valueobject.hero;
 
+import org.springframework.lang.NonNull;
+
 import com.ruben.lotr.core.shared.domain.valueobject.StringValueObject;
 
 public class HeroLastNameVO extends StringValueObject {
-    public HeroLastNameVO(String value) {
+
+    private HeroLastNameVO(String value) {
         super(value);
     }
 
@@ -12,15 +15,15 @@ public class HeroLastNameVO extends StringValueObject {
         return false;
     }
 
-    public static HeroLastNameVO create(String value) {
+    public static @NonNull HeroLastNameVO create(String value) {
         return new HeroLastNameVO(value);
     }
 
-    public static HeroLastNameVO empty() {
+    public static @NonNull HeroLastNameVO empty() {
         return create("");
     }
 
-    public static HeroLastNameVO unknown() {
+    public static @NonNull HeroLastNameVO unknown() {
         return create("Unknown.");
     }
 

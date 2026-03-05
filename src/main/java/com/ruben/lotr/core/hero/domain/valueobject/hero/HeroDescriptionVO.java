@@ -1,9 +1,12 @@
 package com.ruben.lotr.core.hero.domain.valueobject.hero;
 
+import org.springframework.lang.NonNull;
+
 import com.ruben.lotr.core.shared.domain.valueobject.StringValueObject;
 
 public class HeroDescriptionVO extends StringValueObject {
-    public HeroDescriptionVO(String value) {
+
+    private HeroDescriptionVO(String value) {
         super(value);
     }
 
@@ -12,11 +15,11 @@ public class HeroDescriptionVO extends StringValueObject {
         return false;
     }
 
-    public static HeroDescriptionVO create(String value) {
+    public static @NonNull HeroDescriptionVO create(String value) {
         return new HeroDescriptionVO(value);
     }
 
-    public static HeroDescriptionVO empty() {
+    public static @NonNull HeroDescriptionVO empty() {
         return create("");
     }
 

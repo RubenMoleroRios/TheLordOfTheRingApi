@@ -3,8 +3,9 @@ package com.ruben.lotr.core.hero.application.usecase;
 import com.ruben.lotr.core.hero.domain.exception.SideNotFoundException;
 import com.ruben.lotr.core.hero.domain.model.Hero;
 import com.ruben.lotr.core.hero.domain.model.Side;
+import com.ruben.lotr.core.hero.domain.model.SideMother;
 import com.ruben.lotr.core.hero.domain.valueobject.side.SideIdVO;
-import com.ruben.lotr.core.hero.domain.valueobject.side.SideNameVO;
+import com.ruben.lotr.core.hero.domain.valueobject.side.SideIdVOMother;
 import com.ruben.lotr.core.hero.domain.repository.HeroesRepositoryInterface;
 import com.ruben.lotr.core.hero.domain.model.HeroMother;
 
@@ -35,9 +36,9 @@ public class GetHeroesBySideUseCaseTest {
     @Test
     void should_return_heroes_when_side_exists() {
         // Arrange
-        SideIdVO sideId = SideIdVO.generate();
-        Side side = Side.create(SideIdVO.create(sideId.value()), SideNameVO.create("Good"));
-        Hero h1 = HeroMother.create(null, null, side, null, null, null, null, null, null);
+        SideIdVO sideId = SideIdVOMother.random();
+        Side side = SideMother.aSide().withId(sideId).withName("Good").build();
+        Hero h1 = HeroMother.aHero().withSide(side).buildPersisted();
         List<Hero> heroes = Arrays.asList(h1);
 
         when(heroesRepository.searchBySideId(any(SideIdVO.class))).thenReturn(heroes);
@@ -55,7 +56,7 @@ public class GetHeroesBySideUseCaseTest {
     @Test
     void should_throw_exception_when_side_not_found() {
         // Arrange
-        SideIdVO sideId = SideIdVO.generate();
+        SideIdVO sideId = SideIdVOMother.random();
 
         when(heroesRepository.searchBySideId(any(SideIdVO.class))).thenReturn(Arrays.asList());
 

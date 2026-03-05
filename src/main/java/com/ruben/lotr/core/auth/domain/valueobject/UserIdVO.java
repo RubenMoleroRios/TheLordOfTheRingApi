@@ -14,7 +14,7 @@ public final class UserIdVO extends UuidValueObject {
         return new UserIdVO(value);
     }
 
-    public static UserIdVO generate() {
+    public static @NonNull UserIdVO generate() {
         return generate(UserIdVO::new);
     }
 }
