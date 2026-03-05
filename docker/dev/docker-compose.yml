@@ -44,7 +44,6 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - lotr-db-dev-vol:/var/lib/mysql
-      - ../../sql:/docker-entrypoint-initdb.d
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
