@@ -39,6 +39,7 @@ public class HibernateHeroesRepository implements HeroesRepositoryInterface {
                     FROM HeroEntity h
                     JOIN FETCH h.breed
                     JOIN FETCH h.side
+                    ORDER BY h.breed.name ASC, h.name ASC
                 """;
 
         TypedQuery<HeroEntity> query = entityManager.createQuery(jpql, HeroEntity.class);
@@ -67,6 +68,7 @@ public class HibernateHeroesRepository implements HeroesRepositoryInterface {
                     JOIN FETCH h.breed
                     JOIN FETCH h.side
                     WHERE h.breed.id = :breedId
+                    ORDER BY h.name ASC
                 """;
 
         TypedQuery<HeroEntity> query = entityManager.createQuery(jpql, HeroEntity.class);
@@ -87,6 +89,7 @@ public class HibernateHeroesRepository implements HeroesRepositoryInterface {
                     JOIN FETCH h.breed
                     JOIN FETCH h.side
                     WHERE h.side.id = :sideId
+                    ORDER BY h.name ASC
                 """;
 
         TypedQuery<HeroEntity> query = entityManager.createQuery(jpql, HeroEntity.class);
