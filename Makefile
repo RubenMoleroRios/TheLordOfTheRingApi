@@ -5,6 +5,7 @@
 # --------- CONFIG ---------
 DOCKER_DEV_COMPOSE=docker/dev/docker-compose.yml
 DOCKER_PROD_COMPOSE=docker/prod/docker-compose.yml
+DOCKER_TEST_COMPOSE=docker/test/docker-compose.yml
 
 # --------- DEFAULT ---------
 .DEFAULT_GOAL := help
@@ -21,6 +22,13 @@ help:
 	@echo "  make dev-restart      Restart DEV environment"
 	@echo "  make dev-logs         Show DEV application logs"
 	@echo "  make dev-build        Build DEV images without cache"
+	@echo ""
+	@echo "Testing"
+	@echo "  make test-build       Build TEST image"
+	@echo "  make test-unit        Run unit tests in Docker"
+	@echo "  make test-integration Run integration and E2E tests in Docker"
+	@echo "  make test-all         Run all tests in Docker"
+	@echo "  make test-jacoco-open Open JaCoCo HTML report"
 	@echo ""
 	@echo "Production"
 	@echo "  make prod-up          Start PROD environment"
@@ -50,6 +58,22 @@ dev-logs:
 
 dev-build:
 	docker compose -f $(DOCKER_DEV_COMPOSE) build --no-cache
+
+# --------- TEST ---------
+test-build:
+	docker compose -f $(DOCKER_TEST_COMPOSE) build
+
+test-unit:
+	docker compose -f $(DOCKER_TEST_COMPOSE) run --rm lotr-tests test
+
+test-integration:
+	docker compose -f $(DOCKER_TEST_COMPOSE) run --rm lotr-tests verify -DskipUnitTests=true
+
+test-all:
+	docker compose -f $(DOCKER_TEST_COMPOSE) run --rm lotr-tests verify
+
+test-jacoco-open:
+	powershell -NoProfile -Command "Start-Process 'target/site/jacoco/index.html'"
 
 # --------- PROD ---------
 prod-up:

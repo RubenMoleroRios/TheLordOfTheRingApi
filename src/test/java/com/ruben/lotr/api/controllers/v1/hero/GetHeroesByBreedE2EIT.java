@@ -8,6 +8,7 @@ import com.ruben.lotr.api.controllers.v1.auth.RegisterController;
 import com.ruben.lotr.core.hero.infrastructure.hibernate.entities.BreedEntity;
 import com.ruben.lotr.core.hero.infrastructure.hibernate.entities.HeroEntity;
 import com.ruben.lotr.core.hero.infrastructure.hibernate.entities.SideEntity;
+import com.ruben.lotr.testsupport.MySqlTestContainerBase;
 
 import jakarta.persistence.EntityManager;
 
@@ -32,19 +33,11 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Test E2E (HTTP real) para {@link GetHeroesByBreedController}.
- *
- * Qué valida:
- * - Endpoint protegido: usa JWT real (Authorization: Bearer ...).
- * - Seed de datos en H2 con 2 breeds distintos.
- * - Al pedir un breedId concreto, devuelve SOLO héroes de ese breed.
- */
 @Tag("integration")
 @SpringBootTest(classes = GetHeroesByBreedE2EIT.TestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
         "spring.profiles.active=test,hibernate"
 })
-class GetHeroesByBreedE2EIT {
+class GetHeroesByBreedE2EIT extends MySqlTestContainerBase {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -109,12 +102,10 @@ class GetHeroesByBreedE2EIT {
         assertTrue(data.isArray(), "Se esperaba que data fuese un array");
         assertTrue(data.size() >= 1, "Se esperaba al menos 1 héroe para el breed seed");
 
-        // Todos los resultados deben venir con breedName = Elf.
         for (JsonNode hero : data) {
             assertEquals(seed.elfBreedName, hero.path("breedName").asText());
         }
 
-        // Y debe contener a Legolas, pero NO a Aragorn (porque es Human).
         Set<String> names = new HashSet<>();
         for (JsonNode hero : data) {
             names.add(hero.path("name").asText());
@@ -132,7 +123,7 @@ class GetHeroesByBreedE2EIT {
 
     private String registerAndGetToken() throws Exception {
         String email = "user_" + UUID.randomUUID().toString().substring(0, 8) + "@test.com";
-        String password = "secret123"; // >= 8
+        String password = "secret123";
         String name = "Ruben";
 
         HttpHeaders headers = new HttpHeaders();
@@ -183,7 +174,6 @@ class GetHeroesByBreedE2EIT {
             legolas.setLastName("Greenleaf");
             legolas.setBreed(elf);
             legolas.setSide(good);
-            // Campos que en dominio NO aceptan null (si quieres "vacío", usa "").
             legolas.setHairColor("Blond");
             legolas.setDescription("");
 

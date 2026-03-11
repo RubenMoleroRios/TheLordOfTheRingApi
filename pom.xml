@@ -69,6 +69,14 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- HTTP server mock for external API adapter tests -->
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>mockwebserver</artifactId>
+			<version>4.12.0</version>
+			<scope>test</scope>
+		</dependency>
+
 
 		<!-- JPA (Hibernate) -->
 		<dependency>
@@ -91,6 +99,23 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Testcontainers (real MySQL for integration tests) -->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>mysql</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers</artifactId>
 			<scope>test</scope>
 		</dependency>
 
@@ -143,6 +168,7 @@
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
+					<skipTests>${skipUnitTests}</skipTests>
 					<!-- Keep integration tests out of the unit-test phase -->
 					<excludes>
 						<exclude>**/*IT.java</exclude>
@@ -162,6 +188,7 @@
 			<plugin>
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<configuration>
+					<skipITs>${skipIntegrationTests}</skipITs>
 					<includes>
 						<include>**/*IT.java</include>
 						<include>**/*ITCase.java</include>

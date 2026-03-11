@@ -1,0 +1,19 @@
+services:
+  lotr-tests:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      target: base
+    working_dir: /app
+    volumes:
+      - ../..:/app
+      - maven-cache:/root/.m2
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      DOCKER_HOST: unix:///var/run/docker.sock
+      TESTCONTAINERS_HOST_OVERRIDE: host.docker.internal
+    entrypoint: [ "./mvnw" ]
+    command: [ "test" ]
+
+volumes:
+  maven-cache:

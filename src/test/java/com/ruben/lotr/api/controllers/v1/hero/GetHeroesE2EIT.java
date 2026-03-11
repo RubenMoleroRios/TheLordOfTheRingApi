@@ -8,6 +8,7 @@ import com.ruben.lotr.api.controllers.v1.auth.RegisterController;
 import com.ruben.lotr.core.hero.infrastructure.hibernate.entities.BreedEntity;
 import com.ruben.lotr.core.hero.infrastructure.hibernate.entities.HeroEntity;
 import com.ruben.lotr.core.hero.infrastructure.hibernate.entities.SideEntity;
+import com.ruben.lotr.testsupport.MySqlTestContainerBase;
 
 import jakarta.persistence.EntityManager;
 
@@ -30,22 +31,11 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Test E2E (HTTP real) para {@link GetHeroesController}.
- *
- * Qué valida:
- * - Arranca servidor real (Tomcat) con puerto aleatorio.
- * - Hace HTTP real con {@link TestRestTemplate}.
- * - Respeta seguridad real: obtiene un JWT real llamando a /v1/auth/register y
- * lo manda en Authorization.
- * - Hace seed de datos en H2 (breed/side/heroes) y comprueba que la API
- * devuelve esos héroes.
- */
 @Tag("integration")
 @SpringBootTest(classes = GetHeroesE2EIT.TestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
         "spring.profiles.active=test,hibernate"
 })
-class GetHeroesE2EIT {
+class GetHeroesE2EIT extends MySqlTestContainerBase {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -62,28 +52,19 @@ class GetHeroesE2EIT {
     @SpringBootConfiguration
     @EnableAutoConfiguration
     @ComponentScan(basePackages = {
-            // Incluimos core completo para traer auth + hero (use cases, repos, seguridad,
-            // etc.).
             "com.ruben.lotr.core"
     })
     @EnableJpaRepositories(basePackages = {
-            // Necesario para el repositorio Spring Data del módulo auth (registro/login
-            // real).
             "com.ruben.lotr.core.auth.infrastructure.persistence"
     })
     @EntityScan(basePackages = {
-            // Entidades JPA de auth.
             "com.ruben.lotr.core.auth.infrastructure.persistence.entity",
-            // Entidades JPA de héroes (Hibernate repository).
             "com.ruben.lotr.core.hero.infrastructure.hibernate.entities"
     })
     @Import({
-            // Controllers de auth, para conseguir JWT real.
             RegisterController.class,
             LoginController.class,
-            // Controllers que probamos.
             GetHeroesController.class,
-            // Handler global para el wrapper ApiResponse.
             HandlerExceptionController.class
     })
     static class TestApplication {
@@ -119,7 +100,6 @@ class GetHeroesE2EIT {
         assertTrue(data.isArray(), "Se esperaba que data fuese un array");
         assertTrue(data.size() >= 2, "Se esperaban al menos 2 héroes (los seed)");
 
-        // Comprobamos que nuestros dos héroes seed están presentes por nombre.
         Set<String> names = new HashSet<>();
         for (JsonNode hero : data) {
             names.add(hero.path("name").asText());
@@ -137,7 +117,7 @@ class GetHeroesE2EIT {
 
     private String registerAndGetToken() throws Exception {
         String email = "user_" + UUID.randomUUID().toString().substring(0, 8) + "@test.com";
-        String password = "secret123"; // >= 8
+        String password = "secret123";
         String name = "Ruben";
 
         HttpHeaders headers = new HttpHeaders();
@@ -166,7 +146,6 @@ class GetHeroesE2EIT {
     private Seed seedHeroes() {
         TransactionTemplate tx = new TransactionTemplate(transactionManager);
         return tx.execute(status -> {
-            // Creamos 2 breeds distintos.
             BreedEntity elf = instantiate(BreedEntity.class);
             elf.setId(UUID.randomUUID());
             elf.setName("Elf");
@@ -175,7 +154,6 @@ class GetHeroesE2EIT {
             human.setId(UUID.randomUUID());
             human.setName("Human");
 
-            // Creamos un side.
             SideEntity good = instantiate(SideEntity.class);
             good.setId(UUID.randomUUID());
             good.setName("Good");
@@ -184,7 +162,6 @@ class GetHeroesE2EIT {
             entityManager.persist(human);
             entityManager.persist(good);
 
-            // Creamos 2 héroes con breeds diferentes.
             HeroEntity legolas = instantiate(HeroEntity.class);
             legolas.setId(UUID.randomUUID());
             legolas.setName("Legolas");

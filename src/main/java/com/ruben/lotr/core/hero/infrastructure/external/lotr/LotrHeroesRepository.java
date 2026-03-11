@@ -49,7 +49,11 @@ public class LotrHeroesRepository implements HeroesRepositoryInterface {
             HeroIdVO.create("550e8400-e29b-41d4-a716-446655440010").value(), "5cd99d4bde30eff6ebccfea0");
 
     public LotrHeroesRepository(WebClient.Builder builder, HeroApiMapper mapper) {
-        this.webClient = builder.baseUrl("https://the-one-api.dev/v2").build();
+        this(builder, mapper, "https://the-one-api.dev/v2");
+    }
+
+    LotrHeroesRepository(WebClient.Builder builder, HeroApiMapper mapper, String baseUrl) {
+        this.webClient = builder.baseUrl(baseUrl).build();
         this.mapper = mapper;
     }
 
