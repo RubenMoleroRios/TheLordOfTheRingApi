@@ -6,6 +6,7 @@
 DOCKER_DEV_COMPOSE=docker/dev/docker-compose.yml
 DOCKER_PROD_COMPOSE=docker/prod/docker-compose.yml
 DOCKER_TEST_COMPOSE=docker/test/docker-compose.yml
+DOCKER_IMAGE_NAME=thelordofthering-api
 
 # --------- DEFAULT ---------
 .DEFAULT_GOAL := help
@@ -21,7 +22,7 @@ help:
 	@echo "  make dev-down-vol     Stop DEV environment and remove volumes"
 	@echo "  make dev-restart      Restart DEV environment"
 	@echo "  make dev-logs         Show DEV application logs"
-	@echo "  make dev-build        Build DEV images without cache"
+	@echo "  make dev-build        Build DEV Docker image"
 	@echo ""
 	@echo "Testing"
 	@echo "  make test-build       Build TEST image"
@@ -31,6 +32,7 @@ help:
 	@echo "  make test-jacoco-open Open JaCoCo HTML report"
 	@echo ""
 	@echo "Production"
+	@echo "  make prod-build       Build PROD Docker image"
 	@echo "  make prod-up          Start PROD environment"
 	@echo "  make prod-down        Stop PROD environment"
 	@echo "  make prod-down-vol    Stop PROD environment and remove volumes"
@@ -57,7 +59,7 @@ dev-logs:
 	docker compose -f $(DOCKER_DEV_COMPOSE) logs -f lotr-app
 
 dev-build:
-	docker compose -f $(DOCKER_DEV_COMPOSE) build --no-cache
+	docker build --target dev -t $(DOCKER_IMAGE_NAME):dev .
 
 # --------- TEST ---------
 test-build:
@@ -76,6 +78,9 @@ test-jacoco-open:
 	powershell -NoProfile -Command "Start-Process 'target/site/jacoco/index.html'"
 
 # --------- PROD ---------
+prod-build:
+	docker build --target prod -t $(DOCKER_IMAGE_NAME):prod .
+
 prod-up:
 	docker compose -f $(DOCKER_PROD_COMPOSE) up -d
 
