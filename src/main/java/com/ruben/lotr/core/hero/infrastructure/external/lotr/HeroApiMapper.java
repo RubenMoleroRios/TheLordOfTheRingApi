@@ -38,7 +38,7 @@ public class HeroApiMapper {
 
         String[] nameParts = dto.getName().split(" ", 2);
 
-        return Hero.create(
+        return Hero.fromPersistence(
                 heroId,
                 toBreed(dto.getRace(), breedIdMap),
                 Side.unknown(),

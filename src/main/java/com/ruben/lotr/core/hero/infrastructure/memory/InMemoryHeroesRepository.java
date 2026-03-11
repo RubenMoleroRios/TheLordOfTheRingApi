@@ -64,7 +64,7 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
 
                 this.heroes = List.of(
 
-                                Hero.create(
+                                Hero.fromPersistence(
                                                 HeroIdVO.create("96e45918-9804-4df0-8fb4-a9c9cfcfeae1"),
                                                 human,
                                                 good,
@@ -75,7 +75,7 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
                                                 HeroHeightVO.create(1.80),
                                                 HeroDescriptionVO.create("Heir of Isildur")),
 
-                                Hero.create(
+                                Hero.fromPersistence(
                                                 HeroIdVO.create("54fa1b2e-e785-4e02-bf15-df030428c4b6"),
                                                 elf,
                                                 good,
@@ -86,7 +86,7 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
                                                 HeroHeightVO.create(1.90),
                                                 HeroDescriptionVO.create("Prince of the Woodland Realm")),
 
-                                Hero.create(
+                                Hero.fromPersistence(
                                                 HeroIdVO.create("dec5a206-5f7f-4867-a1c1-5aaaa25c6d60"),
                                                 maia,
                                                 good,
@@ -97,7 +97,7 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
                                                 HeroHeightVO.unknown(),
                                                 HeroDescriptionVO.create("Wizard of the Istari order")),
 
-                                Hero.create(
+                                Hero.fromPersistence(
                                                 HeroIdVO.create("edafd4a0-9ad3-4cdd-a9c8-0ca889c79a5e"),
                                                 dwarf,
                                                 good,
@@ -108,7 +108,7 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
                                                 HeroHeightVO.create(1.40),
                                                 HeroDescriptionVO.create("Warrior of the Lonely Mountain")),
 
-                                Hero.create(
+                                Hero.fromPersistence(
                                                 HeroIdVO.create("770db63a-59db-4751-81d3-cedfb3934f28"),
                                                 ent,
                                                 neutral,
@@ -119,7 +119,7 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
                                                 HeroHeightVO.create(5.0),
                                                 HeroDescriptionVO.create("The oldest of the Ents")),
 
-                                Hero.create(
+                                Hero.fromPersistence(
                                                 HeroIdVO.create("f53bc7a7-e8ff-47d3-9549-303db25a8b31"),
                                                 maia,
                                                 evil,
@@ -130,7 +130,7 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
                                                 HeroHeightVO.unknown(),
                                                 HeroDescriptionVO.create("The Dark Lord")),
 
-                                Hero.create(
+                                Hero.fromPersistence(
                                                 HeroIdVO.create("193ece8a-4f61-4037-a750-ce94628e81ec"),
                                                 maia,
                                                 evil,

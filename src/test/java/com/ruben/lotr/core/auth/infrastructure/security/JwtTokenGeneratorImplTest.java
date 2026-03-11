@@ -18,7 +18,7 @@ class JwtTokenGeneratorImplTest {
     void should_generate_valid_token_and_extract_user_id() {
         // Arrange
         JwtTokenGeneratorImpl generator = new JwtTokenGeneratorImpl(SECRET, EXPIRATION_MILLIS);
-        User user = UserMother.create(null, null, null);
+        User user = UserMother.aUser().buildNew();
 
         // Act
         String token = generator.generate(user);

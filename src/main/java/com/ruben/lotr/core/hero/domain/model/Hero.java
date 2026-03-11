@@ -1,5 +1,7 @@
 package com.ruben.lotr.core.hero.domain.model;
 
+import org.springframework.lang.NonNull;
+
 import com.ruben.lotr.core.hero.domain.valueobject.hero.HeroDescriptionVO;
 import com.ruben.lotr.core.hero.domain.valueobject.hero.HeroEyesColorVO;
 import com.ruben.lotr.core.hero.domain.valueobject.hero.HeroHairColorVO;
@@ -20,7 +22,7 @@ public class Hero {
     private Breed breed;
     private Side side;
 
-    public Hero(
+    private Hero(
             HeroIdVO id,
             Breed breed,
             Side side,
@@ -42,16 +44,46 @@ public class Hero {
     }
 
     public static Hero create(
-            HeroIdVO id,
-            Breed breed,
-            Side side,
-            HeroNameVO name,
-            HeroLastNameVO lastName,
-            HeroEyesColorVO eyesColor,
-            HeroHairColorVO hairColor,
-            HeroHeightVO height,
-            HeroDescriptionVO description) {
-        return new Hero(id, breed, side, name, lastName, eyesColor, hairColor, height, description);
+            @NonNull Breed breed,
+            @NonNull Side side,
+            @NonNull HeroNameVO name,
+            @NonNull HeroLastNameVO lastName,
+            @NonNull HeroEyesColorVO eyesColor,
+            @NonNull HeroHairColorVO hairColor,
+            @NonNull HeroHeightVO height,
+            @NonNull HeroDescriptionVO description) {
+        return new Hero(
+                HeroIdVO.generate(),
+                breed,
+                side,
+                name,
+                lastName,
+                eyesColor,
+                hairColor,
+                height,
+                description);
+    }
+
+    public static Hero fromPersistence(
+            @NonNull HeroIdVO id,
+            @NonNull Breed breed,
+            @NonNull Side side,
+            @NonNull HeroNameVO name,
+            @NonNull HeroLastNameVO lastName,
+            @NonNull HeroEyesColorVO eyesColor,
+            @NonNull HeroHairColorVO hairColor,
+            @NonNull HeroHeightVO height,
+            @NonNull HeroDescriptionVO description) {
+        return new Hero(
+                id,
+                breed,
+                side,
+                name,
+                lastName,
+                eyesColor,
+                hairColor,
+                height,
+                description);
     }
 
     public HeroIdVO id() {

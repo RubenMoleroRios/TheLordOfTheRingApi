@@ -1,9 +1,12 @@
 package com.ruben.lotr.core.hero.domain.valueobject.hero;
 
+import org.springframework.lang.NonNull;
+
 import com.ruben.lotr.core.shared.domain.valueobject.StringValueObject;
 
 public class HeroEyesColorVO extends StringValueObject {
-    public HeroEyesColorVO(String value) {
+
+    private HeroEyesColorVO(String value) {
         super(value);
     }
 
@@ -12,11 +15,11 @@ public class HeroEyesColorVO extends StringValueObject {
         return true;
     }
 
-    public static HeroEyesColorVO create(String value) {
+    public static @NonNull HeroEyesColorVO create(String value) {
         return new HeroEyesColorVO(value);
     }
 
-    public static HeroEyesColorVO unknown() {
+    public static @NonNull HeroEyesColorVO unknown() {
         return create("Unknown.");
     }
 }

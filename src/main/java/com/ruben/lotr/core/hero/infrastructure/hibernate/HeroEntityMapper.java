@@ -20,7 +20,7 @@ import com.ruben.lotr.core.hero.infrastructure.hibernate.entities.HeroEntity;
 public class HeroEntityMapper {
 
         public Hero toDomain(HeroEntity entity) {
-                return Hero.create(
+                return Hero.fromPersistence(
                                 HeroIdVO.create(entity.getId().toString()),
                                 Breed.create(
                                                 BreedIdVO.create(entity.getBreed().getId().toString()),

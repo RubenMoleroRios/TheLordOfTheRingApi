@@ -1,9 +1,12 @@
 package com.ruben.lotr.core.hero.domain.valueobject.hero;
 
+import org.springframework.lang.NonNull;
+
 import com.ruben.lotr.core.shared.domain.valueobject.StringValueObject;
 
 public class HeroHairColorVO extends StringValueObject {
-    public HeroHairColorVO(String value) {
+
+    private HeroHairColorVO(String value) {
         super(value);
     }
 
@@ -12,11 +15,11 @@ public class HeroHairColorVO extends StringValueObject {
         return false;
     }
 
-    public static HeroHairColorVO create(String value) {
+    public static @NonNull HeroHairColorVO create(String value) {
         return new HeroHairColorVO(value);
     }
 
-    public static HeroHairColorVO unknown() {
+    public static @NonNull HeroHairColorVO unknown() {
         return create("Unknown.");
     }
 

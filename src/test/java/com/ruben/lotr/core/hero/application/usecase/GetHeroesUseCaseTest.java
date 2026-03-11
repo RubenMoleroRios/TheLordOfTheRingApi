@@ -30,8 +30,8 @@ public class GetHeroesUseCaseTest {
     @Test
     void should_return_all_heroes() {
         // Arrange
-        Hero h1 = HeroMother.create(null, null, null, null, null, null, null, null, null);
-        Hero h2 = HeroMother.create(null, null, null, null, null, null, null, null, null);
+        Hero h1 = HeroMother.aHero().buildPersisted();
+        Hero h2 = HeroMother.aHero().buildPersisted();
         List<Hero> heroes = Arrays.asList(h1, h2);
 
         when(heroesRepository.findAll()).thenReturn(heroes);

@@ -4,6 +4,7 @@ import com.ruben.lotr.core.hero.domain.exception.HeroNotFoundException;
 import com.ruben.lotr.core.hero.domain.model.Hero;
 import com.ruben.lotr.core.hero.domain.repository.HeroesRepositoryInterface;
 import com.ruben.lotr.core.hero.domain.valueobject.hero.HeroIdVO;
+import com.ruben.lotr.core.hero.domain.valueobject.hero.HeroIdVOMother;
 import com.ruben.lotr.core.shared.domain.exception.InvalidUuidException;
 import com.ruben.lotr.core.hero.domain.model.HeroMother;
 
@@ -33,8 +34,8 @@ public class GetHeroByIdUseCaseTest {
         @Test
         void should_return_hero_when_id_exists() {
                 // Arrange
-                HeroIdVO heroId = HeroIdVO.generate();
-                Hero hero = HeroMother.create(heroId, null, null, null, null, null, null, null, null);
+                HeroIdVO heroId = HeroIdVOMother.random();
+                Hero hero = HeroMother.aHero().withId(heroId).buildPersisted();
 
                 when(heroesRepository.findById(any(HeroIdVO.class)))
                                 .thenReturn(Optional.of(hero));
@@ -55,7 +56,7 @@ public class GetHeroByIdUseCaseTest {
         @Test
         void should_throw_exception_when_hero_not_found() {
                 // Arrange
-                HeroIdVO heroId = HeroIdVO.generate();
+                HeroIdVO heroId = HeroIdVOMother.random();
 
                 when(heroesRepository.findById(any(HeroIdVO.class)))
                                 .thenReturn(Optional.empty());

@@ -2,9 +2,10 @@ package com.ruben.lotr.core.hero.application.usecase;
 
 import com.ruben.lotr.core.hero.domain.exception.BreedNotFoundException;
 import com.ruben.lotr.core.hero.domain.model.Breed;
+import com.ruben.lotr.core.hero.domain.model.BreedMother;
 import com.ruben.lotr.core.hero.domain.model.Hero;
 import com.ruben.lotr.core.hero.domain.valueobject.breed.BreedIdVO;
-import com.ruben.lotr.core.hero.domain.valueobject.breed.BreedNameVO;
+import com.ruben.lotr.core.hero.domain.valueobject.breed.BreedIdVOMother;
 import com.ruben.lotr.core.hero.domain.repository.HeroesRepositoryInterface;
 import com.ruben.lotr.core.hero.domain.model.HeroMother;
 
@@ -35,9 +36,9 @@ public class GetHeroesByBreedUseCaseTest {
     @Test
     void should_return_heroes_when_breed_exists() {
         // Arrange
-        BreedIdVO breedId = BreedIdVO.generate();
-        Breed breed = Breed.create(BreedIdVO.create(breedId.value()), BreedNameVO.create("Human"));
-        Hero h1 = HeroMother.create(null, breed, null, null, null, null, null, null, null);
+        BreedIdVO breedId = BreedIdVOMother.random();
+        Breed breed = BreedMother.aBreed().withId(breedId).withName("Human").build();
+        Hero h1 = HeroMother.aHero().withBreed(breed).buildPersisted();
         List<Hero> heroes = Arrays.asList(h1);
 
         when(heroesRepository.searchByBreedId(any(BreedIdVO.class))).thenReturn(heroes);
@@ -55,7 +56,7 @@ public class GetHeroesByBreedUseCaseTest {
     @Test
     void should_throw_exception_when_breed_not_found() {
         // Arrange
-        BreedIdVO breedId = BreedIdVO.generate();
+        BreedIdVO breedId = BreedIdVOMother.random();
 
         when(heroesRepository.searchByBreedId(any(BreedIdVO.class))).thenReturn(Arrays.asList());
 

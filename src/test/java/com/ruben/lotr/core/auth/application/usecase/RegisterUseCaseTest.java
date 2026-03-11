@@ -96,7 +96,7 @@ class RegisterUseCaseTest {
 
                 RegisterUserCommand command = with("Frodo", email, "ringring");
 
-                User existingUser = UserMother.create(null, UserEmailVO.create(email), null);
+                User existingUser = UserMother.aUser().withEmail(email).buildNew();
 
                 when(userRepository.findByEmail(any(UserEmailVO.class)))
                                 .thenReturn(Optional.of(existingUser));

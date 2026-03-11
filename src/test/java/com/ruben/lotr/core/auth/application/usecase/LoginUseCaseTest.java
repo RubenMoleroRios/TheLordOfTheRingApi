@@ -7,6 +7,7 @@ import com.ruben.lotr.core.auth.domain.model.User;
 import com.ruben.lotr.core.auth.domain.repository.UserRepositoryInterface;
 import com.ruben.lotr.core.auth.domain.service.PasswordHasher;
 import com.ruben.lotr.core.auth.domain.valueobject.UserEmailVO;
+import com.ruben.lotr.core.auth.domain.valueobject.UserEmailVOMother;
 import com.ruben.lotr.core.auth.domain.model.UserMother;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +49,7 @@ class LoginUseCaseTest {
                 String email = "frodo@gmail.com";
                 String password = "ringring";
 
-                User user = UserMother.create(null, UserEmailVO.create(email), null);
+                User user = UserMother.aUser().withEmail(email).buildNew();
                 LoginUserCommand command = with(email, password);
 
                 when(userRepository.findByEmail(any(UserEmailVO.class)))
@@ -99,9 +100,9 @@ class LoginUseCaseTest {
         @Test
         void should_throw_exception_when_password_is_invalid() {
                 // Arrange
-                String email = "frodo@gmail.com";
+                String email = UserEmailVOMother.randomEmail();
                 LoginUserCommand command = with(email, "wrong-pass");
-                User user = UserMother.create(null, UserEmailVO.create(email), null);
+                User user = UserMother.aUser().withEmail(email).buildNew();
 
                 when(userRepository.findByEmail(any()))
                                 .thenReturn(Optional.of(user));
