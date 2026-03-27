@@ -2,16 +2,18 @@ package com.ruben.lotr.api.dto.response;
 
 import com.ruben.lotr.core.hero.domain.model.Hero;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public record HeroResponseDTO(
-                String id,
-                String name,
-                String lastName,
-                String breedName,
-                String sideName,
-                String eyesColor,
-                String hairColor,
-                Double height,
-                String description) {
+                @Schema(description = "Identificador del heroe", example = "1") String id,
+                @Schema(description = "Nombre del heroe", example = "Frodo") String name,
+                @Schema(description = "Apellido del heroe", example = "Baggins") String lastName,
+                @Schema(description = "Raza del heroe", example = "Hobbit") String breedName,
+                @Schema(description = "Bando del heroe", example = "Fellowship") String sideName,
+                @Schema(description = "Color de ojos", example = "Blue") String eyesColor,
+                @Schema(description = "Color de pelo", example = "Brown") String hairColor,
+                @Schema(description = "Altura del heroe", example = "1.22") Double height,
+                @Schema(description = "Descripcion del heroe", example = "Ring bearer from the Shire") String description) {
 
         public static HeroResponseDTO from(Hero hero) {
                 return new HeroResponseDTO(
