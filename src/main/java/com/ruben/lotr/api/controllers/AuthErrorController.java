@@ -10,7 +10,10 @@ import com.ruben.lotr.api.http.ApiResponse;
 
 import java.util.Map;
 
+import io.swagger.v3.oas.annotations.Hidden;
+
 @RestController
+@Hidden
 public class AuthErrorController {
 
     @RequestMapping("/error/auth")
