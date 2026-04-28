@@ -18,6 +18,11 @@ public class BreedEntity {
     protected BreedEntity() {
     }
 
+    public BreedEntity(UUID id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public UUID getId() {
         return id;
     }

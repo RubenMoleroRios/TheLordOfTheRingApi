@@ -18,6 +18,10 @@ public final class UserMother {
         private @NonNull UserNameVO name = UserNameVOMother.frodo();
         private @NonNull UserEmailVO email = UserEmailVOMother.frodo();
         private @NonNull UserPasswordHashVO password = UserPasswordHashVOMother.defaultHash();
+        private @NonNull Role role = Role.create(
+                "11f38d4b-a37b-4b92-b62f-e31b838d7885",
+                "USER",
+                java.util.List.of());
 
         public Builder withEmail(@NonNull UserEmailVO email) {
             this.email = email;
@@ -29,11 +33,11 @@ public final class UserMother {
         }
 
         public User buildNew() {
-            return User.create(name, email, password);
+            return User.create(name, email, password, role);
         }
 
         public User buildPersisted() {
-            return User.fromPersistence(id, name, email, password);
+            return User.rehydrate(id, name, email, password, role);
         }
 
         // public Builder withPasswordHash(@NonNull UserPasswordHashVO password) {

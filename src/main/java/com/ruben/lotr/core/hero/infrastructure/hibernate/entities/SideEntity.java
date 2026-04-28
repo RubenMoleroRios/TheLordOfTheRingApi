@@ -18,6 +18,11 @@ public class SideEntity {
     protected SideEntity() {
     }
 
+    public SideEntity(UUID id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public UUID getId() {
         return id;
     }

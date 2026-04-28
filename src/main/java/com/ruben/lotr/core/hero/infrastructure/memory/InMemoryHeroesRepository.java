@@ -1,5 +1,6 @@
 package com.ruben.lotr.core.hero.infrastructure.memory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,7 +63,7 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
                                 BreedIdVO.create("770db63a-59db-4751-81d3-cedfb3934f28"),
                                 BreedNameVO.create("Ent"));
 
-                this.heroes = List.of(
+                this.heroes = new ArrayList<>(List.of(
 
                                 Hero.fromPersistence(
                                                 HeroIdVO.create("96e45918-9804-4df0-8fb4-a9c9cfcfeae1"),
@@ -139,7 +140,19 @@ public class InMemoryHeroesRepository implements HeroesRepositoryInterface {
                                                 HeroEyesColorVO.create("Dark"),
                                                 HeroHairColorVO.create("White"),
                                                 HeroHeightVO.unknown(),
-                                                HeroDescriptionVO.create("Wizard corrupted by power")));
+                                                HeroDescriptionVO.create("Wizard corrupted by power"))));
+        }
+
+        @Override
+        public Hero save(Hero hero) {
+                deleteById(hero.id());
+                heroes.add(hero);
+                return hero;
+        }
+
+        @Override
+        public void deleteById(HeroIdVO id) {
+                heroes.removeIf(hero -> hero.id().equals(id));
         }
 
         @Override

@@ -14,10 +14,25 @@ import com.ruben.lotr.core.hero.domain.valueobject.hero.HeroLastNameVO;
 import com.ruben.lotr.core.hero.domain.valueobject.hero.HeroNameVO;
 import com.ruben.lotr.core.hero.domain.valueobject.side.SideIdVO;
 import com.ruben.lotr.core.hero.domain.valueobject.side.SideNameVO;
+import com.ruben.lotr.core.hero.infrastructure.hibernate.entities.BreedEntity;
 import com.ruben.lotr.core.hero.infrastructure.hibernate.entities.HeroEntity;
+import com.ruben.lotr.core.hero.infrastructure.hibernate.entities.SideEntity;
 
 @Component
 public class HeroEntityMapper {
+
+        public HeroEntity toEntity(Hero hero, BreedEntity breed, SideEntity side) {
+                return new HeroEntity(
+                                java.util.UUID.fromString(hero.id().value()),
+                                hero.name().value(),
+                                hero.lastName().value(),
+                                hero.eyesColor().value(),
+                                hero.hairColor().value(),
+                                hero.height().value(),
+                                hero.description().value(),
+                                breed,
+                                side);
+        }
 
         public Hero toDomain(HeroEntity entity) {
                 return Hero.fromPersistence(

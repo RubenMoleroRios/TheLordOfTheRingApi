@@ -6,13 +6,16 @@ import java.util.UUID;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ruben.lotr.core.hero.domain.model.Hero;
 import com.ruben.lotr.core.hero.domain.repository.HeroesRepositoryInterface;
 import com.ruben.lotr.core.hero.domain.valueobject.breed.BreedIdVO;
 import com.ruben.lotr.core.hero.domain.valueobject.hero.HeroIdVO;
 import com.ruben.lotr.core.hero.domain.valueobject.side.SideIdVO;
+import com.ruben.lotr.core.hero.infrastructure.hibernate.entities.BreedEntity;
 import com.ruben.lotr.core.hero.infrastructure.hibernate.entities.HeroEntity;
+import com.ruben.lotr.core.hero.infrastructure.hibernate.entities.SideEntity;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -30,6 +33,30 @@ public class HibernateHeroesRepository implements HeroesRepositoryInterface {
     public HibernateHeroesRepository(EntityManager entityManager, HeroEntityMapper mapper) {
         this.entityManager = entityManager;
         this.mapper = mapper;
+    }
+
+    @Override
+    @Transactional
+    public Hero save(Hero hero) {
+        BreedEntity breedReference = entityManager.getReference(BreedEntity.class,
+                UUID.fromString(hero.breed().id().value()));
+        SideEntity sideReference = entityManager.getReference(SideEntity.class,
+                UUID.fromString(hero.side().id().value()));
+
+        HeroEntity entity = mapper.toEntity(hero, breedReference, sideReference);
+        HeroEntity saved = entityManager.merge(entity);
+        entityManager.flush();
+        return mapper.toDomain(saved);
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(HeroIdVO id) {
+        HeroEntity entity = entityManager.find(HeroEntity.class, UUID.fromString(id.value()));
+        if (entity != null) {
+            entityManager.remove(entity);
+            entityManager.flush();
+        }
     }
 
     @Override
@@ -54,7 +81,18 @@ public class HibernateHeroesRepository implements HeroesRepositoryInterface {
     public Optional<Hero> findById(HeroIdVO id) {
         UUID heroId = UUID.fromString(id.value());
 
-        HeroEntity entity = entityManager.find(HeroEntity.class, heroId);
+        String jpql = """
+                    SELECT h
+                    FROM HeroEntity h
+                    JOIN FETCH h.breed
+                    JOIN FETCH h.side
+                    WHERE h.id = :heroId
+                """;
+
+        TypedQuery<HeroEntity> query = entityManager.createQuery(jpql, HeroEntity.class);
+        query.setParameter("heroId", heroId);
+
+        HeroEntity entity = query.getResultStream().findFirst().orElse(null);
 
         return Optional.ofNullable(entity)
                 .map(mapper::toDomain);
