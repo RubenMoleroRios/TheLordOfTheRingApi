@@ -1,6 +1,7 @@
 package com.ruben.lotr.core.auth.infrastructure.security;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.crypto.SecretKey;
 
@@ -11,6 +12,7 @@ import com.ruben.lotr.core.auth.application.service.JwtTokenGenerator;
 import com.ruben.lotr.core.auth.domain.model.User;
 
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
 
 @Component
@@ -37,6 +39,8 @@ public class JwtTokenGeneratorImpl implements JwtTokenGenerator {
                 .setSubject(user.id().value())
                 .claim("email", user.email().value())
                 .claim("name", user.name().value())
+                .claim("role", user.role().name())
+                .claim("permissions", user.role().permissions().stream().map(permission -> permission.name()).toList())
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .signWith(secretKey)
@@ -56,11 +60,27 @@ public class JwtTokenGeneratorImpl implements JwtTokenGenerator {
     }
 
     public String getUserId(String token) {
+        return getClaims(token).getSubject();
+    }
+
+    public String getRole(String token) {
+        return getClaims(token).get("role", String.class);
+    }
+
+    public List<String> getPermissions(String token) {
+        Claims claims = getClaims(token);
+        Object permissions = claims.get("permissions");
+        if (permissions instanceof List<?> rawPermissions) {
+            return rawPermissions.stream().map(String::valueOf).toList();
+        }
+        return List.of();
+    }
+
+    private Claims getClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
     }
 }

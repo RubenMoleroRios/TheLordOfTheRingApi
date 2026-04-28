@@ -10,6 +10,10 @@ import com.ruben.lotr.core.hero.domain.valueobject.side.SideIdVO;
 
 public interface HeroesRepositoryInterface {
 
+    Hero save(Hero hero);
+
+    void deleteById(HeroIdVO id);
+
     public Optional<Hero> findById(HeroIdVO id);
 
     public List<Hero> searchByBreedId(BreedIdVO breedId);

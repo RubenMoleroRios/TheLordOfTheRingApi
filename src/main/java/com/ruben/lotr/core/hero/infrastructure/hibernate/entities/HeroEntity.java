@@ -41,6 +41,27 @@ public class HeroEntity {
     protected HeroEntity() {
     }
 
+    public HeroEntity(
+            UUID id,
+            String name,
+            String lastName,
+            String eyesColor,
+            String hairColor,
+            Double height,
+            String description,
+            BreedEntity breed,
+            SideEntity side) {
+        this.id = id;
+        this.name = name;
+        this.lastName = lastName;
+        this.eyesColor = eyesColor;
+        this.hairColor = hairColor;
+        this.height = height;
+        this.description = description;
+        this.breed = breed;
+        this.side = side;
+    }
+
     public UUID getId() {
         return id;
     }

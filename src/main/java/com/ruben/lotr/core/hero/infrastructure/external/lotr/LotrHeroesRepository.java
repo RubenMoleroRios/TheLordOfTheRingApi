@@ -58,6 +58,16 @@ public class LotrHeroesRepository implements HeroesRepositoryInterface {
     }
 
     @Override
+    public Hero save(Hero hero) {
+        throw new UnsupportedOperationException("The external LOTR API repository is read-only.");
+    }
+
+    @Override
+    public void deleteById(HeroIdVO id) {
+        throw new UnsupportedOperationException("The external LOTR API repository is read-only.");
+    }
+
+    @Override
     public Optional<Hero> findById(HeroIdVO id) {
 
         String externalId = heroIdMap.get(id.value());

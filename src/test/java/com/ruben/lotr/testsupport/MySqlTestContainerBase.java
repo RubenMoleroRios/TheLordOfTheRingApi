@@ -1,5 +1,7 @@
 package com.ruben.lotr.testsupport;
 
+import java.util.UUID;
+
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +14,15 @@ public abstract class MySqlTestContainerBase {
     @DynamicPropertySource
     static void registerDataSourceProperties(DynamicPropertyRegistry registry) {
         MySQLContainer<?> mysql = MySqlTestContainerSingleton.get();
+        String databaseName = "lotr_test_" + UUID.randomUUID().toString().replace("-", "");
+        String baseJdbcUrl = mysql.getJdbcUrl().replace(
+                "/" + mysql.getDatabaseName(),
+                "/" + databaseName);
+        final String jdbcUrl = baseJdbcUrl
+                + (baseJdbcUrl.contains("?") ? "&" : "?")
+                + "createDatabaseIfNotExist=true";
 
-        registry.add("spring.datasource.url", mysql::getJdbcUrl);
+        registry.add("spring.datasource.url", () -> jdbcUrl);
         registry.add("spring.datasource.username", mysql::getUsername);
         registry.add("spring.datasource.password", mysql::getPassword);
         registry.add("spring.datasource.driver-class-name", mysql::getDriverClassName);

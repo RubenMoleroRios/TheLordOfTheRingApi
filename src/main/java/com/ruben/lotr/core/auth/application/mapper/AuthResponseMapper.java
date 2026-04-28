@@ -15,6 +15,7 @@ public final class AuthResponseMapper {
                 new UserResponse(
                         user.id().value(),
                         user.name().value(),
-                        user.email().value()));
+                        user.email().value(),
+                        user.role().name()));
     }
 }

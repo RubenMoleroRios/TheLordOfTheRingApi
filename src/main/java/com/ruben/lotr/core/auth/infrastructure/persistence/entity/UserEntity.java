@@ -1,7 +1,14 @@
 package com.ruben.lotr.core.auth.infrastructure.persistence.entity;
 
-import jakarta.persistence.*;
 import java.util.UUID;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
@@ -20,14 +27,19 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "role_id", nullable = false)
+    private RoleEntity role;
+
     protected UserEntity() {
     }
 
-    public UserEntity(UUID id, String name, String email, String password) {
+    public UserEntity(UUID id, String name, String email, String password, RoleEntity role) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     public UUID getId() {
@@ -44,5 +56,9 @@ public class UserEntity {
 
     public String getPassword() {
         return password;
+    }
+
+    public RoleEntity getRole() {
+        return role;
     }
 }

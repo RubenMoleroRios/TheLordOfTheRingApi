@@ -6,8 +6,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import com.ruben.lotr.core.auth.domain.model.User;
+import com.ruben.lotr.core.auth.domain.model.RoleName;
+import com.ruben.lotr.core.auth.domain.repository.RoleRepositoryInterface;
 import com.ruben.lotr.core.auth.domain.repository.UserRepositoryInterface;
 import com.ruben.lotr.core.auth.domain.service.PasswordHasher;
+import com.ruben.lotr.core.auth.domain.exception.RoleNotFoundException;
 import com.ruben.lotr.core.auth.domain.valueobject.UserEmailVO;
 import com.ruben.lotr.core.auth.domain.valueobject.UserNameVO;
 import com.ruben.lotr.core.auth.domain.valueobject.UserPasswordHashVO;
@@ -22,6 +25,7 @@ public class TestDemoDataConfig {
 
     @Bean
     public ApplicationRunner demoUserInitializer(UserRepositoryInterface userRepository,
+            RoleRepositoryInterface roleRepository,
             PasswordHasher passwordHasher) {
         return args -> {
             UserEmailVO demoEmail = UserEmailVO.create(DEMO_EMAIL);
@@ -33,7 +37,9 @@ public class TestDemoDataConfig {
             User demoUser = User.create(
                     UserNameVO.create(DEMO_NAME),
                     demoEmail,
-                    UserPasswordHashVO.fromHash(passwordHasher.hash(DEMO_PASSWORD)));
+                    UserPasswordHashVO.fromHash(passwordHasher.hash(DEMO_PASSWORD)),
+                    roleRepository.findByName(RoleName.USER)
+                            .orElseThrow(() -> new RoleNotFoundException(RoleName.USER.name())));
 
             userRepository.save(demoUser);
         };

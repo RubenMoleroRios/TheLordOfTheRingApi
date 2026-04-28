@@ -6,7 +6,7 @@ final class MySqlTestContainerSingleton {
 
     private static final MySQLContainer<?> INSTANCE = new MySQLContainer<>("mysql:8.0")
             .withDatabaseName("lotr_test")
-            .withUsername("test")
+            .withUsername("root")
             .withPassword("test");
 
     static {

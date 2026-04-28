@@ -13,38 +13,44 @@ public final class User {
     private final UserNameVO name;
     private final UserEmailVO email;
     private final UserPasswordHashVO password;
+    private final Role role;
 
     private User(
             UserIdVO id,
             UserNameVO name,
             UserEmailVO email,
-            UserPasswordHashVO password) {
+            UserPasswordHashVO password,
+            Role role) {
 
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     public static @NonNull User create(
             @NonNull UserNameVO name,
             @NonNull UserEmailVO email,
-            @NonNull UserPasswordHashVO password) {
+            @NonNull UserPasswordHashVO password,
+            @NonNull Role role) {
 
         return new User(
                 UserIdVO.generate(),
                 name,
                 email,
-                password);
+                password,
+                role);
     }
 
-    public static @NonNull User fromPersistence(
+    public static @NonNull User rehydrate(
             @NonNull UserIdVO id,
             @NonNull UserNameVO name,
             @NonNull UserEmailVO email,
-            @NonNull UserPasswordHashVO password) {
+            @NonNull UserPasswordHashVO password,
+            @NonNull Role role) {
 
-        return new User(id, name, email, password);
+        return new User(id, name, email, password, role);
     }
 
     public UserIdVO id() {
@@ -61,5 +67,9 @@ public final class User {
 
     public UserPasswordHashVO password() {
         return password;
+    }
+
+    public Role role() {
+        return role;
     }
 }

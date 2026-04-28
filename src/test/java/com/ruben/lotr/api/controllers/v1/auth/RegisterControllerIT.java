@@ -6,7 +6,6 @@ import com.ruben.lotr.core.auth.application.dto.UserResponse;
 import com.ruben.lotr.core.auth.application.usecase.RegisterUseCase;
 import com.ruben.lotr.core.auth.application.usecase.RegisterUserCommand;
 import com.ruben.lotr.core.auth.domain.exception.UserAlreadyExistsException;
-import com.ruben.lotr.testsupport.MySqlTestContainerBase;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -17,6 +16,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
@@ -33,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("integration")
 @SpringBootTest(classes = RegisterControllerIT.TestApplication.class)
 @AutoConfigureMockMvc(addFilters = false)
-class RegisterControllerIT extends MySqlTestContainerBase {
+class RegisterControllerIT {
 
         @Autowired
         private MockMvc mockMvc;
@@ -43,6 +45,9 @@ class RegisterControllerIT extends MySqlTestContainerBase {
 
         @SpringBootConfiguration
         @EnableAutoConfiguration(exclude = {
+                        DataSourceAutoConfiguration.class,
+                        HibernateJpaAutoConfiguration.class,
+                        FlywayAutoConfiguration.class,
                         SecurityAutoConfiguration.class,
                         SecurityFilterAutoConfiguration.class,
                         ManagementWebSecurityAutoConfiguration.class
@@ -59,7 +64,7 @@ class RegisterControllerIT extends MySqlTestContainerBase {
                 // ---------- ARRANGE ----------
                 AuthResponse authResponse = new AuthResponse(
                                 "token-123",
-                                new UserResponse("user-1", "Ruben", "ruben@example.com"));
+                                new UserResponse("user-1", "Ruben", "ruben@example.com", "USER"));
 
                 when(registerUseCase.execute(any(RegisterUserCommand.class)))
                                 .thenReturn(authResponse);

@@ -3,7 +3,10 @@ package com.ruben.lotr.core.auth.application.usecase;
 import com.ruben.lotr.core.auth.application.dto.AuthResponse;
 import com.ruben.lotr.core.auth.application.service.JwtTokenGenerator;
 import com.ruben.lotr.core.auth.domain.exception.UserAlreadyExistsException;
+import com.ruben.lotr.core.auth.domain.model.Role;
+import com.ruben.lotr.core.auth.domain.model.RoleName;
 import com.ruben.lotr.core.auth.domain.model.User;
+import com.ruben.lotr.core.auth.domain.repository.RoleRepositoryInterface;
 import com.ruben.lotr.core.auth.domain.repository.UserRepositoryInterface;
 import com.ruben.lotr.core.auth.domain.service.PasswordHasher;
 import com.ruben.lotr.core.auth.domain.valueobject.UserEmailVO;
@@ -25,6 +28,7 @@ import static org.mockito.Mockito.*;
 class RegisterUseCaseTest {
 
         private UserRepositoryInterface userRepository;
+        private RoleRepositoryInterface roleRepository;
         private PasswordHasher passwordHasher;
         private JwtTokenGenerator jwtTokenGenerator;
 
@@ -33,11 +37,13 @@ class RegisterUseCaseTest {
         @BeforeEach
         void setUp() {
                 userRepository = mock(UserRepositoryInterface.class);
+                roleRepository = mock(RoleRepositoryInterface.class);
                 passwordHasher = mock(PasswordHasher.class);
                 jwtTokenGenerator = mock(JwtTokenGenerator.class);
 
                 registerUseCase = new RegisterUseCase(
                                 userRepository,
+                                roleRepository,
                                 passwordHasher,
                                 jwtTokenGenerator);
         }
@@ -57,6 +63,12 @@ class RegisterUseCaseTest {
                 when(passwordHasher.hash(password))
                                 .thenReturn("hashed-password12345");
 
+                when(roleRepository.findByName(RoleName.USER))
+                                .thenReturn(Optional.of(Role.create(
+                                                "11f38d4b-a37b-4b92-b62f-e31b838d7885",
+                                                "USER",
+                                                java.util.List.of())));
+
                 when(jwtTokenGenerator.generate(any(User.class)))
                                 .thenReturn("token-123");
 
@@ -75,6 +87,9 @@ class RegisterUseCaseTest {
 
                 verify(passwordHasher)
                                 .hash(password);
+
+                verify(roleRepository)
+                                .findByName(RoleName.USER);
 
                 // verify
                 ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);

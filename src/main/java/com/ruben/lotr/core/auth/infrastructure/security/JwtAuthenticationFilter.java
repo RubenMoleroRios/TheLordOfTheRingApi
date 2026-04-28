@@ -1,6 +1,7 @@
 package com.ruben.lotr.core.auth.infrastructure.security;
 
 import java.io.IOException;
+import java.util.List;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.ruben.lotr.core.auth.domain.exception.InvalidCredentialsException;
@@ -46,9 +48,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String userId = jwtTokenGenerator.getUserId(token);
+        String role = jwtTokenGenerator.getRole(token);
+        List<String> permissions = jwtTokenGenerator.getPermissions(token);
 
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null,
-                null);
+        AuthenticatedUser authenticatedUser = new AuthenticatedUser(userId, role, permissions);
+
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                authenticatedUser,
+                null,
+                permissions.stream().map(SimpleGrantedAuthority::new).toList());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         filterChain.doFilter(request, response);
