@@ -2,7 +2,7 @@ SET NAMES utf8mb4;
 
 INSERT INTO `side` VALUES (UUID_TO_BIN("ce145f20-c5d3-42d2-89a1-1c9df74061f6"), "bando del bien");
 INSERT INTO `side` VALUES (UUID_TO_BIN("5471980f-31c9-4a4d-92bc-9d8fa27a031b"), "bando del mal");
-INSERT INTO `side` VALUES (UUID_TO_BIN("9f273070-5ffe-4910-ac7a-d1c916dfe7bd"), "bando nautral");
+INSERT INTO `side` VALUES (UUID_TO_BIN("9f273070-5ffe-4910-ac7a-d1c916dfe7bd"), "bando neutral");
 
 INSERT INTO `breed` VALUES (UUID_TO_BIN("f99fd696-399c-4417-9acb-72e3eeffb1c7"), "Elfos");
 INSERT INTO `breed` VALUES (UUID_TO_BIN("4f54a1d6-83b8-468a-996d-6f8c0b9c0330"), "Hombres");
@@ -29,6 +29,6 @@ INSERT INTO `heroes` VALUES (UUID_TO_BIN("91fb3199-3a2f-4aff-8267-6177f554ee3f")
 INSERT INTO `heroes` VALUES (UUID_TO_BIN("56403631-3232-4b9c-ae21-7cc21c1b492d"), "Grishnákh", "sin apellido", 1.75, "Claro", "Oscuros", "Orco de Mordor, acompaña a los Uruk-hai que capturan a Merry y Pippin, muere en Fangorn.", UUID_TO_BIN("5471980f-31c9-4a4d-92bc-9d8fa27a031b"), UUID_TO_BIN("762fe2eb-4f16-4bd5-ae3d-569e2a04d3cd"));
 INSERT INTO `heroes` VALUES (UUID_TO_BIN("770db63a-59db-4751-81d3-cedfb3934f28"), "Barbol", "Treebread", 5, "no tiene pelo", "verde-dorados", "El más viejo de los Ents, ayuda a los hobbits y dirige el ataque a Isengard.", UUID_TO_BIN("9f273070-5ffe-4910-ac7a-d1c916dfe7bd"), UUID_TO_BIN("2f1cdb02-4317-49e9-a2b7-a5008d315a19"));
 INSERT INTO `heroes` VALUES (UUID_TO_BIN("192b77bb-b2a1-495e-bad3-41f26045101b"), "Bregalad", "Corteza Rápida", 4, "Similar a hojas jóvenes", "Verde claro", "Más impetuoso que otros ents, amigo de Merry y Pippin", UUID_TO_BIN("9f273070-5ffe-4910-ac7a-d1c916dfe7bd"), UUID_TO_BIN("2f1cdb02-4317-49e9-a2b7-a5008d315a19"));
-INSERT INTO `heroes` VALUES (UUID_TO_BIN("dec5a206-5f7f-4867-a1c1-5aaaa25c6d60"), "Gandalf", "El gris", 1.8, "Gris", "Azules", "Mago, guía de la Comunidad, sabio y compasivo, regresa como Gandalf el Blanco tras su caída en Moria.", UUID_TO_BIN("9f273070-5ffe-4910-ac7a-d1c916dfe7bd"), UUID_TO_BIN("76e2686f-431f-40f0-9361-aed97f5b62a5"));
-INSERT INTO `heroes` VALUES (UUID_TO_BIN("193ece8a-4f61-4037-a750-ce94628e81ec"), "Saruman", "El blanco", 1.90, "Blanco", "Oscuros", "Líder del Concilio Blanco, traiciona y se alía con Sauron, controla Isengard.", UUID_TO_BIN("9f273070-5ffe-4910-ac7a-d1c916dfe7bd"), UUID_TO_BIN("76e2686f-431f-40f0-9361-aed97f5b62a5"));
-INSERT INTO `heroes` VALUES (UUID_TO_BIN("f53bc7a7-e8ff-47d3-9549-303db25a8b31"), "Sauron", "El señor oscuro", 2, "Negro", "Rojo", "Antiguo Maia corrompido, creador del Anillo Único, enemigo principal de la Tercera Edad.", UUID_TO_BIN("9f273070-5ffe-4910-ac7a-d1c916dfe7bd"), UUID_TO_BIN("76e2686f-431f-40f0-9361-aed97f5b62a5"));
+INSERT INTO `heroes` VALUES (UUID_TO_BIN("dec5a206-5f7f-4867-a1c1-5aaaa25c6d60"), "Gandalf", "El gris", 1.8, "Gris", "Azules", "Mago, guía de la Comunidad, sabio y compasivo, regresa como Gandalf el Blanco tras su caída en Moria.", UUID_TO_BIN("ce145f20-c5d3-42d2-89a1-1c9df74061f6"), UUID_TO_BIN("76e2686f-431f-40f0-9361-aed97f5b62a5"));
+INSERT INTO `heroes` VALUES (UUID_TO_BIN("193ece8a-4f61-4037-a750-ce94628e81ec"), "Saruman", "El blanco", 1.90, "Blanco", "Oscuros", "Líder del Concilio Blanco, traiciona y se alía con Sauron, controla Isengard.", UUID_TO_BIN("5471980f-31c9-4a4d-92bc-9d8fa27a031b"), UUID_TO_BIN("76e2686f-431f-40f0-9361-aed97f5b62a5"));
+INSERT INTO `heroes` VALUES (UUID_TO_BIN("f53bc7a7-e8ff-47d3-9549-303db25a8b31"), "Sauron", "El señor oscuro", 2, "Negro", "Rojo", "Antiguo Maia corrompido, creador del Anillo Único, enemigo principal de la Tercera Edad.", UUID_TO_BIN("5471980f-31c9-4a4d-92bc-9d8fa27a031b"), UUID_TO_BIN("76e2686f-431f-40f0-9361-aed97f5b62a5"));
