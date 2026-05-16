@@ -4,11 +4,11 @@
             "type": "java",
             "name": "Spring Boot-ThelordoftheringApiApplication<thelordofthering-api>",
             "request": "launch",
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/backend",
             "mainClass": "com.ruben.lotr.thelordofthering_api.ThelordoftheringApiApplication",
             "projectName": "thelordofthering-api",
             "args": "",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/backend/.env"
         },
         {
             "type": "java",

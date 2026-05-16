@@ -1,6 +1,6 @@
 HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
@@ -34,9 +34,10 @@ build/
 
 !.vscode/launch.json
 
-/docker/*/.env
-scripts/_out/
+/backend/docker/*/.env
+/frontend/docker/*/.env
+backend/scripts/_out/
 
 ### Volumes ###
 
-volumes/*
+backend/volumes/*

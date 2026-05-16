@@ -1,0 +1,24 @@
+services:
+  lotr-frontend:
+    container_name: ${FRONTEND_CONTAINER_NAME:-lotr-frontend-prod}
+    image: ${FRONTEND_IMAGE_NAME:-lotr-frontend}:${IMAGE_TAG:-prod}
+    build:
+      context: ../..
+      dockerfile: docker/Dockerfile
+      target: prod
+    env_file:
+      - path: ../.env.example
+        required: true
+      - path: .env
+        required: false
+    environment:
+      API_BASE_URL: ${API_BASE_URL:-http://localhost:9525/api}
+    ports:
+      - "${FRONTEND_HOST_PORT:-8080}:80"
+    restart: always
+    networks:
+      - net-frontend
+
+networks:
+  net-frontend:
+    driver: bridge

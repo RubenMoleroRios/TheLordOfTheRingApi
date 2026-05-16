@@ -1,244 +1,207 @@
 # The Lord of the Ring API
 
-API REST construida con Spring Boot 3.5 y Java 17 para consultar heroes del universo LOTR, autenticar usuarios con JWT y aplicar RBAC sobre endpoints de administracion.
+Monorepo full stack con backend en Spring Boot y frontend en Angular para autenticación, exploración de héroes de la Tierra Media y administración protegida mediante RBAC.
 
-## Stack
+## Resumen
 
-- Java 17
-- Spring Boot 3.5.5
-- Spring Web
-- Spring Data JPA + Hibernate
-- Spring Security + JWT
-- Flyway
-- MySQL
-- H2 para algunos tests de soporte
-- Testcontainers para integracion y E2E
-- OpenAPI / Swagger UI
+- Reúne una API REST y una SPA dentro de un único repositorio.
+- Orquesta desarrollo, pruebas y construcción desde la raíz con Make y Docker.
+- Centraliza documentación, comandos y configuración del stack completo.
+- Mantiene separación clara entre frontend, backend e infraestructura.
 
-## Funcionalidad principal
+## Alcance funcional
 
-- Registro y login de usuarios con JWT.
-- Roles `USER` y `ADMIN` con permisos desacoplados.
-- Consulta de heroes, heroes por raza y heroes por bando.
-- Administracion de heroes por parte de usuarios con permisos de escritura.
-- Administracion de usuarios por parte de administradores.
-- Migraciones versionadas con Flyway.
+- Autenticación con JWT y control de acceso por permisos.
+- Catálogo de héroes, razas y bandos.
+- Operaciones administrativas sobre usuarios y héroes.
+- Dashboard web protegido para consumir la API real.
+- Entornos de desarrollo, prueba y producción.
 
 ## Arquitectura
 
-La aplicacion esta organizada por modulos y casos de uso:
+```text
+TheLordOfTheRingApi/
+|- backend/    API REST Spring Boot + Docker + Maven Wrapper + pruebas
+|- frontend/   SPA Angular + Docker + configuración pública
+|- Makefile    Orquestación del stack completo
+`- README.md   Documentación general del monorepo
+```
 
-- `src/main/java/com/ruben/lotr/core/auth`: dominio, casos de uso, persistencia y seguridad de autenticacion.
-- `src/main/java/com/ruben/lotr/core/hero`: dominio, casos de uso y adaptadores de heroes.
-- `src/main/java/com/ruben/lotr/api/controllers`: capa HTTP.
-- `src/main/resources/db/migration`: migraciones principales.
-- `src/test/resources/db/test-migration`: esquema y seed de pruebas para integracion/E2E.
+- El frontend consume la API mediante `API_BASE_URL`.
+- El backend expone el contexto HTTP bajo `API_CONTEXT_PATH=/api`.
+- La integración entre ambos se realiza exclusivamente por contrato HTTP.
+- El arranque conjunto en desarrollo levanta backend, frontend y MySQL.
+
+## Stack técnico
+
+### Backend
+
+- Java 17
+- Spring Boot 3.5.5
+- Spring Security
+- Spring Data JPA + Hibernate
+- Flyway
+- MySQL 8
+- JWT
+- Testcontainers
+- Swagger UI
+
+### Frontend
+
+- Angular 21
+- TypeScript 5.9
+- RxJS 7
+- Angular Router
+- Formularios reactivos
+- Vitest
+
+### Infraestructura
+
+- Docker
+- Docker Compose
+- Make
+- Render
 
 ## Requisitos
 
-- JDK 17
-- Docker Desktop si vas a usar los entornos Docker o los tests con Testcontainers
-- Maven Wrapper incluido en el proyecto
+- Docker Desktop para entornos contenedorizados y pruebas con Testcontainers.
+- Java 17 para ejecutar el backend fuera de Docker.
+- Node.js compatible con Angular 21 para ejecutar el frontend fuera de Docker.
+- `make` para utilizar los atajos definidos en los Makefile.
 
-## Variables de entorno
+## Configuración
 
-La aplicacion principal lee estas variables:
+### Backend
 
-- `APP_NAME`
-- `API_CONTAINER_PORT`
-- `API_CONTEXT_PATH`
-- `DB_HOST`
-- `DB_CONTAINER_PORT`
-- `DB_NAME`
-- `DB_USERNAME`
-- `DB_PASSWORD`
-- `LOTR_API_TOKEN`
-- `JWT_SECRET_KEY`
-- `JWT_ACCESS_TOKEN_EXPIRATION_MS`
+- Archivo base: `backend/docker/.env.example`
+- Puerto HTTP por defecto: `9525`
+- Context path por defecto: `/api`
+- Base de datos por defecto: MySQL con nombre `lotr`
 
-Valores utiles de referencia:
+### Frontend
 
-- `API_CONTAINER_PORT=9525`
-- `API_CONTEXT_PATH=/api`
-- `JWT_ACCESS_TOKEN_EXPIRATION_MS=3600000`
-- `JWT_SECRET_KEY` debe tener suficiente longitud para firmar JWT de forma segura
+- Archivo base: `frontend/docker/.env.example`
+- Puerto HTTP por defecto: `4200`
+- API consumida por defecto: `http://localhost:9525/api`
+- Configuración pública en `frontend/public/browser-config.js`
 
-## Ejecucion local con Maven
+Valor actual de referencia del runtime del cliente:
 
-Antes de arrancar, exporta las variables necesarias. En PowerShell, por ejemplo:
-
-```powershell
-$env:APP_NAME="lotr-api"
-$env:API_CONTAINER_PORT="9525"
-$env:API_CONTEXT_PATH="/api"
-$env:DB_HOST="localhost"
-$env:DB_CONTAINER_PORT="3306"
-$env:DB_NAME="lotr"
-$env:DB_USERNAME="lotr"
-$env:DB_PASSWORD="lotr"
-$env:LOTR_API_TOKEN="tu_token_externo"
-$env:JWT_SECRET_KEY="01234567890123456789012345678901"
-$env:JWT_ACCESS_TOKEN_EXPIRATION_MS="3600000"
+```js
+window.__appConfig = {
+    apiBaseUrl: 'http://localhost:9525/api'
+};
 ```
 
-Luego arranca la API con:
+## Puesta en marcha
+
+### Stack completo en desarrollo
+
+Desde la raíz del repositorio:
 
 ```powershell
-.\mvnw spring-boot:run
+make dev-app-complete-up
 ```
 
-## Ejecucion con Docker Compose
+Servicios esperados:
 
-El proyecto incluye entornos para desarrollo, test y produccion bajo `docker/`.
+- API en `http://localhost:9525/api`
+- Swagger UI en `http://localhost:9525/api/swagger-ui/index.html`
+- Salud en `http://localhost:9525/api/health`
+- Frontend en `http://localhost:4200`
+- MySQL en `localhost:3360`
 
-Comandos principales del `Makefile`:
+Para detener el entorno:
 
-```bash
+```powershell
+make dev-app-complete-down
+```
+
+Para reconstruir imágenes de desarrollo:
+
+```powershell
+make dev-app-complete-build
+```
+
+## Comandos principales
+
+### Raíz
+
+```powershell
+make backend-dev-up
+make backend-dev-down
+make backend-dev-build
+make backend-dev-logs
+make backend-test-all
+
+make frontend-dev-up
+make frontend-dev-down
+make frontend-dev-build
+make frontend-dev-logs
+
+make dev-app-complete-up
+make dev-app-complete-down
+make dev-app-complete-build
+```
+
+### Backend
+
+```powershell
+cd backend
 make dev-up
 make dev-down
+make dev-down-vol
 make dev-build
 make dev-logs
-```
-
-El entorno de desarrollo levanta:
-
-- la API con la imagen `dev`
-- MySQL 8.0
-- LiveReload y puerto de depuracion `5005`
-
-El `healthcheck` del contenedor apunta a:
-
-```text
-http://localhost:9525/api/health
-```
-
-## Swagger
-
-Swagger UI esta habilitado y las rutas publicas de documentacion estan abiertas en seguridad.
-
-Si usas `API_CONTEXT_PATH=/api`, la URL habitual sera:
-
-```text
-http://localhost:9525/api/swagger-ui/index.html
-```
-
-## Endpoints principales
-
-Autenticacion:
-
-- `POST /v1/auth/register`
-- `POST /v1/auth/login`
-- `POST /v1/auth/logout`
-
-Lectura de heroes:
-
-- `GET /v1/heroes`
-- `GET /v1/breeds/{breedId}/heroes`
-- `GET /v1/sides/{sideId}/heroes`
-
-Administracion de usuarios:
-
-- `GET /v1/admin/users`
-- `GET /v1/admin/users/{id}`
-- `POST /v1/admin/users`
-- `PUT /v1/admin/users/{id}`
-- `DELETE /v1/admin/users/{id}`
-
-Administracion de heroes:
-
-- `POST /v1/admin/heroes`
-- `PUT /v1/admin/heroes/{id}`
-- `DELETE /v1/admin/heroes/{id}`
-
-Salud:
-
-- `GET /health`
-
-## RBAC
-
-La seguridad usa JWT stateless y permisos materializados como authorities de Spring Security.
-
-Reglas actuales:
-
-- rutas publicas: Swagger, `/health`, `POST /v1/auth/login`, `POST /v1/auth/register`
-- lectura de heroes: requiere `HERO_READ`
-- lectura de usuarios admin: requiere `USER_READ`
-- alta de usuarios admin: requiere `USER_CREATE`
-- actualizacion de usuarios admin: requiere `USER_UPDATE`
-- borrado de usuarios admin: requiere `USER_DELETE`
-- alta de heroes admin: requiere `HERO_CREATE`
-- actualizacion de heroes admin: requiere `HERO_UPDATE`
-- borrado de heroes admin: requiere `HERO_DELETE`
-
-El registro publico crea usuarios con rol por defecto `USER`.
-
-## Tests
-
-### Maven
-
-Tests unitarios:
-
-```powershell
-.\mvnw test
-```
-
-Suite completa con unitarios + integracion/E2E:
-
-```powershell
-.\mvnw verify
-```
-
-Solo integracion/E2E:
-
-```powershell
-.\mvnw -DskipUnitTests=true verify
-```
-
-Ejecucion puntual de los E2E admin validados recientemente:
-
-```powershell
-.\mvnw "-Dmaven.resources.skip=true" "-DskipITs=false" "-Dtest=AdminUsersE2EIT,AdminHeroesE2EIT" clean test
-```
-
-### Docker
-
-El contenedor de tests monta el socket Docker para que Testcontainers pueda levantar MySQL real durante las pruebas.
-
-```bash
 make test-build
 make test-unit
 make test-integration
 make test-all
-make test-jacoco-open
+make prod-build
+make prod-up
+make prod-down
 ```
 
-## Cobertura
+### Frontend
 
-JaCoCo genera datos separados para unit tests e integration tests y los fusiona en la fase `verify`.
-
-Reporte HTML esperado:
-
-```text
-target/site/jacoco/index.html
+```powershell
+cd frontend
+make dev-up
+make dev-down
+make dev-build
+npm install
+npm run start
+npm run build
+npm run test
 ```
 
-## Despliegue
+## Integración y seguridad
 
-El archivo `render.yaml` define un despliegue web en Render:
+- El frontend adjunta el token JWT a las peticiones privadas contra la API configurada.
+- Las rutas públicas principales incluyen login, registro, salud y documentación OpenAPI.
+- Los permisos relevantes incluyen `HERO_READ`, `HERO_CREATE`, `HERO_UPDATE`, `HERO_DELETE`, `USER_READ`, `USER_CREATE`, `USER_UPDATE` y `USER_DELETE`.
+- El registro público crea usuarios con rol por defecto `USER`.
 
-- runtime Java
-- build command: `./mvnw clean package -DskipTests`
-- start command: `java -jar target/*.jar`
-- Java 17
+## Pruebas y calidad
 
-## Postman
+### Backend
 
-La coleccion del proyecto esta en:
+- Pruebas unitarias con Surefire.
+- Integración y E2E con Failsafe.
+- Base de datos real en pruebas mediante Testcontainers.
+- Cobertura unificada en `backend/target/site/jacoco/index.html`.
 
-```text
-postman/lotr.postman_collection.json
-```
+### Frontend
+
+- Pruebas con `npm run test` usando Vitest.
+
+## Despliegue y operaciones
+
+- Compose de backend: `backend/docker/dev`, `backend/docker/test`, `backend/docker/prod`
+- Compose de frontend: `frontend/docker/dev`, `frontend/docker/prod`
+- Despliegue del backend preparado en `backend/render.yaml`
+- Colección Postman disponible en `postman/lotr.postman_collection.json`
 
 ## Estado actual
 
-La integracion RBAC y los E2E admin de usuarios y heroes han quedado operativos sobre el esquema de pruebas actual con Flyway + Testcontainers.
+El monorepo está preparado para desarrollo full stack: la raíz coordina backend y frontend, la API expone autenticación JWT con RBAC y catálogo de héroes, y la SPA consume esos endpoints con rutas protegidas y filtros funcionales.

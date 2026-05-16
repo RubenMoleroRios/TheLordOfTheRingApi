@@ -1,12 +1,10 @@
 # ==========================================================
-# LOTR API - Makefile
+# LOTR Monorepo - Makefile
 # ==========================================================
 
 # --------- CONFIG ---------
-DOCKER_DEV_COMPOSE=docker/dev/docker-compose.yml
-DOCKER_PROD_COMPOSE=docker/prod/docker-compose.yml
-DOCKER_TEST_COMPOSE=docker/test/docker-compose.yml
-DOCKER_IMAGE_NAME=thelordofthering-api
+BACKEND_DIR=backend
+FRONTEND_DIR=frontend
 
 # --------- DEFAULT ---------
 .DEFAULT_GOAL := help
@@ -14,84 +12,75 @@ DOCKER_IMAGE_NAME=thelordofthering-api
 # --------- HELP ---------
 help:
 	@echo ""
-	@echo "LOTR API - Makefile"
+	@echo "LOTR Monorepo - Makefile"
 	@echo ""
-	@echo "Development"
-	@echo "  make dev-up           Start DEV environment"
-	@echo "  make dev-down         Stop DEV environment"
-	@echo "  make dev-down-vol     Stop DEV environment and remove volumes"
-	@echo "  make dev-restart      Restart DEV environment"
-	@echo "  make dev-logs         Show DEV application logs"
-	@echo "  make dev-build        Build DEV Docker image"
+	@echo "Backend"
+	@echo "  make backend-dev-up      Start backend DEV environment"
+	@echo "  make backend-dev-down    Stop backend DEV environment"
+	@echo "  make backend-dev-down-vol Stop backend DEV and remove volumes"
+	@echo "  make backend-dev-build   Build backend DEV image"
+	@echo "  make backend-dev-logs    Show backend DEV logs"
+	@echo "  make backend-test-all    Run backend tests in Docker"
 	@echo ""
-	@echo "Testing"
-	@echo "  make test-build       Build TEST image"
-	@echo "  make test-unit        Run unit tests in Docker"
-	@echo "  make test-integration Run integration and E2E tests in Docker"
-	@echo "  make test-all         Run all tests in Docker"
-	@echo "  make test-jacoco-open Open JaCoCo HTML report"
+	@echo "Frontend"
+	@echo "  make frontend-dev-up     Start frontend DEV environment"
+	@echo "  make frontend-dev-down   Stop frontend DEV environment"
+	@echo "  make frontend-dev-build  Build frontend DEV image"
+	@echo "  make frontend-dev-logs   Show frontend DEV logs"
 	@echo ""
-	@echo "Production"
-	@echo "  make prod-build       Build PROD Docker image"
-	@echo "  make prod-up          Start PROD environment"
-	@echo "  make prod-down        Stop PROD environment"
-	@echo "  make prod-down-vol    Stop PROD environment and remove volumes"
-	@echo "  make prod-logs        Show PROD application logs"
+	@echo "Full stack"
+	@echo "  make dev-app-complete-up    Start backend + frontend DEV"
+	@echo "  make dev-app-complete-down  Stop backend + frontend DEV"
+	@echo "  make dev-app-complete-build Build backend + frontend DEV"
 	@echo ""
 	@echo "Cleanup"
-	@echo "  make clean            Remove containers, networks and volumes"
+	@echo "  make clean               Remove Docker containers, networks and volumes"
 	@echo ""
 
-# --------- DEV ---------
-dev-up:
-	docker compose -f $(DOCKER_DEV_COMPOSE) up -d
+# --------- BACKEND ---------
+backend-dev-up:
+	$(MAKE) -C $(BACKEND_DIR) dev-up
 
-dev-down:
-	docker compose -f $(DOCKER_DEV_COMPOSE) down
+backend-dev-down:
+	$(MAKE) -C $(BACKEND_DIR) dev-down
 
-dev-down-vol:
-	docker compose -f $(DOCKER_DEV_COMPOSE) down -v
+backend-dev-down-vol:
+	$(MAKE) -C $(BACKEND_DIR) dev-down-vol
 
-dev-restart:
-	docker compose -f $(DOCKER_DEV_COMPOSE) restart
+backend-dev-build:
+	$(MAKE) -C $(BACKEND_DIR) dev-build
 
-dev-logs:
-	docker compose -f $(DOCKER_DEV_COMPOSE) logs -f lotr-app
+backend-dev-logs:
+	$(MAKE) -C $(BACKEND_DIR) dev-logs
 
-dev-build:
-	docker build --target dev -t $(DOCKER_IMAGE_NAME):dev .
+backend-test-all:
+	$(MAKE) -C $(BACKEND_DIR) test-all
 
-# --------- TEST ---------
-test-build:
-	docker compose -f $(DOCKER_TEST_COMPOSE) build
+# --------- FRONTEND ---------
+frontend-dev-up:
+	$(MAKE) -C $(FRONTEND_DIR) dev-up
 
-test-unit:
-	docker compose -f $(DOCKER_TEST_COMPOSE) run --rm lotr-tests test
+frontend-dev-down:
+	$(MAKE) -C $(FRONTEND_DIR) dev-down
 
-test-integration:
-	docker compose -f $(DOCKER_TEST_COMPOSE) run --rm lotr-tests verify -DskipUnitTests=true
+frontend-dev-build:
+	$(MAKE) -C $(FRONTEND_DIR) dev-build
 
-test-all:
-	docker compose -f $(DOCKER_TEST_COMPOSE) run --rm lotr-tests verify
+frontend-dev-logs:
+	$(MAKE) -C $(FRONTEND_DIR) dev-logs
 
-test-jacoco-open:
-	powershell -NoProfile -Command "Start-Process 'target/site/jacoco/index.html'"
+# --------- FULL STACK ---------
+dev-app-complete-up:
+	$(MAKE) -C $(BACKEND_DIR) dev-up
+	$(MAKE) -C $(FRONTEND_DIR) dev-up
 
-# --------- PROD ---------
-prod-build:
-	docker build --target prod -t $(DOCKER_IMAGE_NAME):prod .
+dev-app-complete-down:
+	$(MAKE) -C $(FRONTEND_DIR) dev-down
+	$(MAKE) -C $(BACKEND_DIR) dev-down
 
-prod-up:
-	docker compose -f $(DOCKER_PROD_COMPOSE) up -d
-
-prod-down:
-	docker compose -f $(DOCKER_PROD_COMPOSE) down
-
-prod-down-vol:
-	docker compose -f $(DOCKER_PROD_COMPOSE) down -v
-
-prod-logs:
-	docker compose -f $(DOCKER_PROD_COMPOSE) logs -f lotr-app
+dev-app-complete-build:
+	$(MAKE) -C $(BACKEND_DIR) dev-build
+	$(MAKE) -C $(FRONTEND_DIR) dev-build
 
 # --------- CLEAN ---------
 clean:
