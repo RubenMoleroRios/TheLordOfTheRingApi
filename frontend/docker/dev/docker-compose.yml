@@ -1,0 +1,27 @@
+services:
+  lotr-frontend:
+    container_name: ${FRONTEND_CONTAINER_NAME:-lotr-frontend-dev}
+    image: ${FRONTEND_IMAGE_NAME:-lotr-frontend}:${IMAGE_TAG:-dev}
+    build:
+      context: ../..
+      dockerfile: docker/Dockerfile
+      target: dev
+    env_file:
+      - path: ../.env.example
+        required: true
+      - path: .env
+        required: false
+    ports:
+      - "${FRONTEND_HOST_PORT:-4200}:4200"
+    volumes:
+      - ../..:/app
+      - lotr-frontend-node-modules:/app/node_modules
+    networks:
+      - net-frontend
+
+networks:
+  net-frontend:
+    driver: bridge
+
+volumes:
+  lotr-frontend-node-modules:

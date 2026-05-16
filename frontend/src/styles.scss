@@ -1,0 +1,66 @@
+:root {
+    --bg-page: #071013;
+    --bg-layer: #0d171a;
+    --accent: #e3ba69;
+    --accent-strong: #ad7b34;
+    --accent-soft: #f5d8a0;
+    --text-primary: #f7efe0;
+    --text-secondary: #c7b8a0;
+    --text-muted: #8e8577;
+    --font-display: 'Cinzel', Georgia, serif;
+    --font-body: 'Manrope', 'Segoe UI', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    font-family: var(--font-body);
+    color: var(--text-primary);
+    background:
+        radial-gradient(circle at top, rgba(227, 186, 105, 0.12), transparent 22%),
+        linear-gradient(180deg, #102126 0%, #081114 55%, #050b0d 100%);
+    background-attachment: fixed;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(circle at center, black, transparent 85%);
+    opacity: 0.24;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+a {
+    color: inherit;
+}

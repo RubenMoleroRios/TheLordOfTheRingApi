@@ -1,0 +1,74 @@
+services:
+  lotr-app:
+    container_name: ${BACKEND_CONTAINER_NAME:-my_project_backend}_prod
+    image: ${BACKEND_IMAGE_NAME:-my-project-backend}:${IMAGE_TAG:-prod}
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      target: prod
+    restart: always
+    ports:
+      - "${APP_HOST_PORT:-9525}:${API_CONTAINER_PORT:-9525}"
+    env_file:
+      - path: ../.env.example
+        required: true
+      - path: .env
+        required: false
+    environment:
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200,http://localhost:8080,http://localhost}
+    depends_on:
+      lotr-db:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9525/api/health" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - net-backend
+
+  lotr-frontend:
+    container_name: ${FRONTEND_CONTAINER_NAME:-lotr-frontend-prod}
+    image: ${FRONTEND_IMAGE_NAME:-lotr-frontend}:${IMAGE_TAG:-prod}
+    build:
+      context: ../../frontend
+      dockerfile: Dockerfile
+      target: prod
+    restart: always
+    environment:
+      API_BASE_URL: ${API_BASE_URL:-/api}
+    depends_on:
+      lotr-app:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_HOST_PORT:-8080}:80"
+    networks:
+      - net-backend
+
+  lotr-db:
+    container_name: ${BACKEND_DB_CONTAINER_NAME:-my_project_backend_db}
+    image: mysql/mysql-server:8.0
+    restart: always
+    ports:
+      - "${DB_HOST_PORT:-3360}:${DB_CONTAINER_PORT:-3306}"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-changeme}
+      MYSQL_DATABASE: ${DB_NAME:-lotr}
+      MYSQL_USER: ${DB_USERNAME:-lotr}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-lotr}
+    volumes:
+      - lotr-db-prod-vol:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      retries: 5
+    networks:
+      - net-backend
+
+networks:
+  net-backend:
+    driver: bridge
+
+volumes:
+  lotr-db-prod-vol:

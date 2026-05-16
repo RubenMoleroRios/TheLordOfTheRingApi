@@ -1,0 +1,9 @@
+node_modules
+.angular
+coverage
+dist
+.git
+.vscode
+Dockerfile
+nginx.conf
+docker-entrypoint.sh
