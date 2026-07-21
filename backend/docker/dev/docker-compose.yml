@@ -8,6 +8,7 @@ services:
       target: dev
     command: >
       ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments=" -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+    restart: unless-stopped
     ports:
       - "${APP_HOST_PORT:-9525}:${API_CONTAINER_PORT:-9525}"
       - "35729:35729"
@@ -18,7 +19,7 @@ services:
       - path: .env
         required: false
     environment:
-      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200,http://localhost:8080,http://localhost}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200,http://localhost:8080,http://localhost,http://192.168.1.200:4200,http://rubenmolero.com,https://rubenmolero.com,http://www.rubenmolero.com,https://www.rubenmolero.com,http://api.rubenmolero.com,https://api.rubenmolero.com,http://www.api.rubenmolero.com,https://www.api.rubenmolero.com}
     volumes:
       - ../../src:/app/src
       - ../../pom.xml:/app/pom.xml
@@ -41,13 +42,14 @@ services:
     container_name: ${FRONTEND_CONTAINER_NAME:-lotr-frontend-dev}
     image: ${FRONTEND_IMAGE_NAME:-lotr-frontend}:${IMAGE_TAG:-dev}
     build:
-      context: ../../frontend
-      dockerfile: Dockerfile
+      context: ../../../frontend
+      dockerfile: docker/Dockerfile
       target: dev
     ports:
       - "${FRONTEND_HOST_PORT:-4200}:4200"
+    restart: unless-stopped
     volumes:
-      - ../../frontend:/app
+      - ../../../frontend:/app
       - lotr-frontend-node-modules:/app/node_modules
     depends_on:
       lotr-app:
@@ -58,6 +60,7 @@ services:
   lotr-db:
     container_name: ${BACKEND_DB_CONTAINER_NAME:-my_project_backend_db}
     image: mysql/mysql-server:8.0
+    restart: unless-stopped
     ports:
       - "${DB_HOST_PORT:-3360}:${DB_CONTAINER_PORT:-3306}"
     environment:

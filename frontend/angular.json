@@ -58,6 +58,13 @@
           "defaultConfiguration": "production"
         },
         "serve": {
+          "options": {
+            "proxyConfig": "proxy.conf.json",
+            "allowedHosts": [
+              "api.rubenmolero.com",
+              "www.api.rubenmolero.com"
+            ]
+          },
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {

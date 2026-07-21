@@ -15,7 +15,7 @@ services:
       - path: .env
         required: false
     environment:
-      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200,http://localhost:8080,http://localhost}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200,http://localhost:8080,http://localhost,http://api.rubenmolero.com,https://api.rubenmolero.com,http://www.api.rubenmolero.com,https://www.api.rubenmolero.com,http://rubenmolero.com,https://rubenmolero.com,http://www.rubenmolero.com,https://www.rubenmolero.com}
     depends_on:
       lotr-db:
         condition: service_healthy
